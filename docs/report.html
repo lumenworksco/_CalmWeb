@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Impact Report — CalmCampus</title>
+  <meta name="description" content="CalmCampus's formal commitments to student wellbeing, privacy, accessibility, and ethical technology. Our company pledge.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <style>
+    /* ── Report-specific styles ─────────────────────────────────────── */
+
+    /* Page hero — lighter than main site to signal a different context */
+    .report-hero {
+      background: var(--dark);
+      padding: 160px 24px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .report-hero-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -60%);
+      width: 600px; height: 500px;
+      background: radial-gradient(ellipse at center,
+        rgba(123,148,96,0.12) 0%,
+        rgba(88,86,214,0.06) 55%,
+        transparent 72%);
+      pointer-events: none;
+    }
+    .report-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+    .report-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(123,148,96,0.10);
+      border: 1px solid rgba(123,148,96,0.22);
+      color: var(--sage-mid);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+    .report-hero h1 {
+      font-size: clamp(40px, 6.5vw, 68px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.06;
+      letter-spacing: -2px;
+      margin-bottom: 22px;
+    }
+    .report-hero p {
+      font-size: 18px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.75;
+      max-width: 560px;
+      margin: 0 auto 44px;
+    }
+    .report-hero p strong { color: rgba(255,255,255,0.88); }
+    .report-date {
+      display: inline-block;
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Pledge intro strip ─────────────────────────────────────────── */
+    .pledge-intro {
+      background: var(--dark2);
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+      padding: 52px 0;
+      text-align: center;
+    }
+    .pledge-intro blockquote {
+      font-size: clamp(18px, 2.5vw, 22px);
+      font-weight: 500;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      max-width: 760px;
+      margin: 0 auto;
+      font-style: italic;
+      letter-spacing: -0.2px;
+    }
+    .pledge-intro blockquote strong { color: var(--green); font-style: normal; }
+
+    /* ── Commitment cards ───────────────────────────────────────────── */
+    .pledge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .pledge-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 30px;
+      transition: box-shadow 0.22s, transform 0.22s;
+      position: relative;
+      overflow: hidden;
+    }
+    .pledge-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .pledge-card--green::before  { background: linear-gradient(90deg, var(--green), var(--sage-mid)); }
+    .pledge-card--blue::before   { background: linear-gradient(90deg, #007AFF, #34AADC); }
+    .pledge-card--purple::before { background: linear-gradient(90deg, #5856D6, #AF52DE); }
+    .pledge-card--orange::before { background: linear-gradient(90deg, #FF9F0A, #FF6B00); }
+    .pledge-card--red::before    { background: linear-gradient(90deg, #FF3B30, #FF6961); }
+    .pledge-card--teal::before   { background: linear-gradient(90deg, #32ADE6, #30B0C7); }
+
+    .pledge-card:hover {
+      box-shadow: 0 10px 36px rgba(0,0,0,0.09);
+      transform: translateY(-2px);
+    }
+
+    .pledge-icon {
+      font-size: 38px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .pledge-card h3 {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+    .pledge-card p {
+      font-size: 14.5px;
+      color: var(--text2);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .pledge-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pledge-bullets li {
+      font-size: 13.5px;
+      color: var(--text2);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .pledge-bullets li::before {
+      content: '✓';
+      font-weight: 700;
+      color: var(--green);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Privacy deep-dive ──────────────────────────────────────────── */
+    .privacy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 0 var(--border), 0 0 0 1px var(--border);
+    }
+    .privacy-table thead tr {
+      background: var(--green);
+    }
+    .privacy-table thead th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .privacy-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .privacy-table tbody tr:last-child { border-bottom: none; }
+    .privacy-table tbody tr:hover { background: rgba(123,148,96,0.04); }
+    .privacy-table tbody td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--text);
+      vertical-align: top;
+    }
+    .privacy-table tbody td:first-child { font-weight: 600; color: var(--text); }
+    .privacy-table tbody td:nth-child(2) { color: var(--text2); }
+    .privacy-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .privacy-status--never {
+      background: rgba(255,59,48,0.09);
+      color: #d92c24;
+    }
+    .privacy-status--device {
+      background: rgba(123,148,96,0.12);
+      color: var(--green);
+    }
+    .privacy-status--local {
+      background: rgba(0,122,255,0.09);
+      color: var(--blue);
+    }
+
+    /* ── Annual commitments ─────────────────────────────────────────── */
+    .commitments-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .commitment-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+    .commitment-item:hover {
+      border-color: rgba(123,148,96,0.28);
+    }
+    .commitment-number {
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .commitment-item h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .commitment-item p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+
+    /* ── Signatories ────────────────────────────────────────────────── */
+    .signatories {
+      display: flex;
+      gap: 32px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .signatory-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      text-align: center;
+      min-width: 200px;
+    }
+    .signatory-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .signatory-role {
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 20px;
+    }
+    .signatory-sig {
+      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+      font-size: 28px;
+      color: var(--green);
+      letter-spacing: 1px;
+      line-height: 1.2;
+    }
+    .signatory-date {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Report section intro overrides ────────────────────────────── */
+    .section-title.centered { text-align: center; }
+    .section-sub.centered   { text-align: center; margin-left: auto; margin-right: auto; }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .report-hero { padding: 120px 24px 72px; }
+      .privacy-table thead th:nth-child(2),
+      .privacy-table tbody td:nth-child(2) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ───────────────────────────────────────────────────────── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="CalmCampus" class="nav-logo-img">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#problem">Problem</a></li>
+        <li><a href="index.html#product">Product</a></li>
+        <li><a href="index.html#technology">Technology</a></li>
+        <li><a href="index.html#market">Market</a></li>
+        <li><a href="report.html" style="color:#fff">Impact Report</a></li>
+      </ul>
+      <a href="index.html#invest" class="btn btn-sm">Get in touch</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+  <section class="report-hero">
+    <div class="report-hero-glow"></div>
+    <div class="report-hero-inner">
+      <div class="report-hero-eyebrow">📋 Social Impact Report · 2026</div>
+      <h1>Our commitment<br>to student wellbeing.</h1>
+      <p>
+        CalmCampus was built on a single belief: <strong>technology should serve the
+        student, not extract from them.</strong> This page documents the principles,
+        pledges, and ongoing commitments that guide every decision we make.
+      </p>
+      <a href="index.html#invest" class="btn btn-primary">Work with us</a>
+      <div class="report-date">Published April 27, 2026 · Updated annually</div>
+    </div>
+  </section>
+
+  <!-- ── Pledge quote ──────────────────────────────────────────────────────── -->
+  <section class="pledge-intro">
+    <div class="container">
+      <blockquote>
+        "We pledge to build CalmCampus as a tool that puts the student first — not
+        engagement metrics, not data monetisation, not growth at any cost. Our measure of
+        success is <strong>students who feel less burned out</strong>, not students who
+        spend more time in the app."
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ── Six core pledges ──────────────────────────────────────────────────── -->
+  <section class="section" id="pledges">
+    <div class="container">
+      <div class="section-label-tag">Our Pledges</div>
+      <h2 class="section-title">Six commitments.<br>No small print.</h2>
+      <p class="section-sub">
+        These are not aspirations. They are hard constraints built into the
+        architecture, the business model, and the team culture of CalmCampus.
+      </p>
+
+      <div class="pledge-grid">
+
+        <!-- 1. Privacy by architecture -->
+        <div class="pledge-card pledge-card--green">
+          <span class="pledge-icon">🔒</span>
+          <h3>Privacy by architecture</h3>
+          <p>Your mental health data never leaves your device — not because
+             of a policy, but because the architecture makes it impossible.</p>
+          <ul class="pledge-bullets">
+            <li>Zero cloud storage of behavioral data</li>
+            <li>On-device ML — no server roundtrips for health signals</li>
+            <li>No analytics SDKs, trackers, or ad identifiers</li>
+            <li>No account required — the app works fully offline</li>
+            <li>GDPR-native: nothing to regulate because nothing is collected</li>
+          </ul>
+        </div>
+
+        <!-- 2. Evidence-based care only -->
+        <div class="pledge-card pledge-card--blue">
+          <span class="pledge-icon">🧠</span>
+          <h3>Evidence-based care only</h3>
+          <p>Every intervention in CalmCampus is grounded in peer-reviewed
+             clinical research. We do not ship wellness features without
+             clinical backing.</p>
+          <ul class="pledge-bullets">
+            <li>All exercises sourced from CBT and ACT literature</li>
+            <li>No pseudoscience, no unvalidated "biohacking" content</li>
+            <li>Crisis resources link to accredited student counselling services</li>
+            <li>Anomaly detection calibrated per-student — no population averages</li>
+          </ul>
+        </div>
+
+        <!-- 3. Free for students -->
+        <div class="pledge-card pledge-card--purple">
+          <span class="pledge-icon">🎓</span>
+          <h3>Free for students, always</h3>
+          <p>Burnout affects every student regardless of income. The core
+             experience of CalmCampus will never be paywalled.</p>
+          <ul class="pledge-bullets">
+            <li>Core wellness monitoring: permanently free</li>
+            <li>All intervention exercises: permanently free</li>
+            <li>No dark patterns, no premium nagging, no countdown timers</li>
+            <li>University licensing funds development — not user subscriptions</li>
+          </ul>
+        </div>
+
+        <!-- 4. Transparent & open -->
+        <div class="pledge-card pledge-card--orange">
+          <span class="pledge-icon">🔓</span>
+          <h3>Transparent &amp; open</h3>
+          <p>We believe students and institutions deserve to understand exactly
+             how CalmCampus works — and verify it.</p>
+          <ul class="pledge-bullets">
+            <li>Source code is open on GitHub under the MIT license</li>
+            <li>Wellness scoring algorithm is documented and auditable</li>
+            <li>Annual impact report (this page) published every year</li>
+            <li>No black-box AI: every alert explains why it was triggered</li>
+          </ul>
+        </div>
+
+        <!-- 5. Accessible by default -->
+        <div class="pledge-card pledge-card--teal">
+          <span class="pledge-icon">♿</span>
+          <h3>Accessible by default</h3>
+          <p>Burnout does not discriminate. CalmCampus must work for every
+             student, including those who rely on assistive technology.</p>
+          <ul class="pledge-bullets">
+            <li>Full VoiceOver and TalkBack support across all screens</li>
+            <li>Dynamic Type and font scaling respected throughout</li>
+            <li>Minimum 4.5:1 WCAG AA contrast on all interactive elements</li>
+            <li>All micro-interventions available in text, audio, and haptic form</li>
+          </ul>
+        </div>
+
+        <!-- 6. No engagement traps -->
+        <div class="pledge-card pledge-card--red">
+          <span class="pledge-icon">🚫</span>
+          <h3>No engagement traps</h3>
+          <p>Most wellness apps are designed to be opened daily. We are
+             designed to be needed less over time — and we measure success
+             that way.</p>
+          <ul class="pledge-bullets">
+            <li>No infinite feeds, no social comparison, no leaderboards</li>
+            <li>Notification frequency chosen by the student, never the algorithm</li>
+            <li>Streak mechanics exist to build habits, not to guilt users</li>
+            <li>Success metric: reduction in anomaly frequency over time</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Privacy deep-dive ─────────────────────────────────────────────────── -->
+  <section class="section section-alt" id="privacy">
+    <div class="container">
+      <div class="section-label-tag">Data &amp; Privacy</div>
+      <h2 class="section-title">What we collect.<br>What we never touch.</h2>
+      <p class="section-sub">
+        Total transparency on the data model. Every signal CalmCampus uses
+        is listed below, alongside exactly where it lives and how long it is kept.
+      </p>
+
+      <table class="privacy-table">
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Purpose</th>
+            <th>Storage</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Step count (pedometer)</td>
+            <td>Activity baseline — low activity correlates with burnout risk</td>
+            <td>On-device only (Hive)</td>
+            <td><span class="privacy-status privacy-status--device">✓ On-device</span></td>
+          </tr>
+          <tr>
+            <td>Self-reported sleep duration</td>
+            <td>Sleep deprivation is the strongest early burnout predictor</td>
+            <td>On-device only (Hive)</td>
+            <td><span class="privacy-status privacy-status--device">✓ On-device</span></td>
+          </tr>
+          <tr>
+            <td>Screen time (estimated)</td>
+            <td>Excessive screen time signals stress &amp; avoidance behavior</td>
+            <td>On-device only (Hive)</td>
+            <td><span class="privacy-status privacy-status--device">✓ On-device</span></td>
+          </tr>
+          <tr>
+            <td>Focus session length</td>
+            <td>Declining focus duration predicts cognitive overload</td>
+            <td>On-device only (Hive)</td>
+            <td><span class="privacy-status privacy-status--device">✓ On-device</span></td>
+          </tr>
+          <tr>
+            <td>Mood check-in (1–5 scale)</td>
+            <td>Subjective wellbeing anchors the behavioral baseline</td>
+            <td>On-device only (Hive)</td>
+            <td><span class="privacy-status privacy-status--device">✓ On-device</span></td>
+          </tr>
+          <tr>
+            <td>App preferences &amp; settings</td>
+            <td>Notification prefs, onboarding state, dark mode</td>
+            <td>On-device only (SharedPreferences)</td>
+            <td><span class="privacy-status privacy-status--local">✓ Local only</span></td>
+          </tr>
+          <tr>
+            <td>Name / email / identifier</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="privacy-status privacy-status--never">✗ Never collected</span></td>
+          </tr>
+          <tr>
+            <td>Location data</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="privacy-status privacy-status--never">✗ Never collected</span></td>
+          </tr>
+          <tr>
+            <td>Contacts / calendar access</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="privacy-status privacy-status--never">✗ Never collected</span></td>
+          </tr>
+          <tr>
+            <td>Device identifiers (IDFA, IDFV)</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="privacy-status privacy-status--never">✗ Never collected</span></td>
+          </tr>
+          <tr>
+            <td>Crash / analytics telemetry</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="privacy-status privacy-status--never">✗ Never collected</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Annual commitments (dark section) ────────────────────────────────── -->
+  <section class="section section-dark" id="impact">
+    <div class="container">
+      <div class="section-label-tag section-label-tag--light">Annual Targets</div>
+      <h2 class="section-title section-title--light centered">What we commit<br>to measuring.</h2>
+      <p class="section-sub section-sub--light centered">
+        We will publish updated numbers against these targets every year.
+        Accountability is not optional.
+      </p>
+
+      <div class="commitments-list">
+        <div class="commitment-item">
+          <div class="commitment-number">200</div>
+          <h4>Students in Year 1 pilot</h4>
+          <p>Closed beta at KU Leuven by Summer 2026, with IRB-approved longitudinal data collection for efficacy research.</p>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-number">0</div>
+          <h4>Third-party data sharing agreements</h4>
+          <p>No data licensing, no research partnerships that involve exporting student behavioral data off-device.</p>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-number">100%</div>
+          <h4>Open-source codebase</h4>
+          <p>The full application source code remains publicly auditable on GitHub under the MIT license.</p>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-number">WCAG AA</div>
+          <h4>Accessibility standard</h4>
+          <p>All screens pass WCAG 2.1 AA by the time CalmCampus exits beta. Verified with automated and manual audits.</p>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-number">€0</div>
+          <h4>Cost to individual students</h4>
+          <p>The app is and will remain free for individual users. Revenue comes from institutional B2B licensing, never subscriptions.</p>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-number">5</div>
+          <h4>Belgian university partnerships by 2027</h4>
+          <p>KU Leuven, UCLL, Ghent University, VUB, and one Wallonia-region institution — the roadmap target for Year 2.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Founders' pledge ──────────────────────────────────────────────────── -->
+  <section class="section section-alt" id="pledge">
+    <div class="container" style="text-align:center">
+      <div class="section-label-tag">Founders' Pledge</div>
+      <h2 class="section-title centered">Signed and dated.</h2>
+      <p class="section-sub centered">
+        These commitments are not corporate boilerplate. They are personal pledges
+        from the two people who built this — and who will be held to them.
+      </p>
+
+      <div class="signatories">
+        <div class="signatory-card">
+          <div class="signatory-name">Florian Braun</div>
+          <div class="signatory-role">Co-founder · Engineering Technology, UCLL</div>
+          <div class="signatory-sig">Florian Braun</div>
+          <div class="signatory-date">April 27, 2026</div>
+        </div>
+        <div class="signatory-card">
+          <div class="signatory-name">Helene David</div>
+          <div class="signatory-role">Co-founder · Economics and Business, UCLL</div>
+          <div class="signatory-sig">Helene David</div>
+          <div class="signatory-date">April 27, 2026</div>
+        </div>
+      </div>
+
+      <p style="margin-top:40px;font-size:14px;color:var(--text3);max-width:520px;margin-left:auto;margin-right:auto;line-height:1.7;">
+        Questions about our commitments, data practices, or impact methodology?
+        Reach us directly at
+        <a href="mailto:braunf25@proton.me" style="color:var(--green);text-decoration:none;font-weight:600;">braunf25@proton.me</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="CalmCampus" class="footer-logo-img">
+        <span class="footer-tagline">— Stop burnout before it starts.</span>
+      </div>
+      <div class="footer-links">
+        <a href="index.html#problem">Problem</a>
+        <a href="index.html#product">Product</a>
+        <a href="index.html#technology">Technology</a>
+        <a href="index.html#market">Market</a>
+        <a href="index.html#invest">Invest</a>
+        <a href="report.html" style="color:rgba(255,255,255,0.7)">Impact Report</a>
+      </div>
+      <div class="footer-copy">
+        © 2026 CalmCampus. Built at KU Leuven.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
