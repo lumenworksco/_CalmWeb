@@ -43,7 +43,8 @@
       <a href="#" class="nav-logo" aria-label="CalmCampus home">
         <img src="assets/brand/first-sprout-horizontal-color.svg" alt="CalmCampus" width="222" height="34">
       </a>
-      <ul class="nav-links">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="l1" d="M4 7h16"/><path class="l2" d="M4 12h16"/><path class="l3" d="M4 17h16"/></svg></button>
+      <ul class="nav-links" id="menu">
         <li><a href="#why">Why</a></li>
         <li><a href="#app">The app</a></li>
         <li><a href="#privacy">Privacy</a></li>
@@ -418,5 +419,19 @@
     </div>
   </footer>
 
+<script>
+  (function () {
+    var btn = document.querySelector(".nav-toggle"), nav = document.querySelector(".nav");
+    if (!btn) return;
+    function set(open) {
+      nav.classList.toggle("open", open);
+      btn.setAttribute("aria-expanded", open);
+      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
+    btn.addEventListener("click", function () { set(!nav.classList.contains("open")); });
+    document.querySelectorAll(".nav-links a").forEach(function (a) { a.addEventListener("click", function () { set(false); }); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") set(false); });
+  })();
+  </script>
 </body>
 </html>
