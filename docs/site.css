@@ -278,3 +278,8 @@ p { text-wrap: pretty; }
 @media (max-width: 640px) { .research-plan { padding: 28px; } .ev { padding: 26px; } }
 .ev-word { font-size: 32px; padding-top: 6px; }
 .dossier-btn { margin-top: 28px; }
+.dossier-meta { margin-top: 14px; font-size: 15px; color: var(--neutral-800); max-width: 60ch; }
+.claims { margin-top: 8px; align-items: start; }
+.claims .panel { background: var(--cream); }
+.claims .research-plan { background: var(--sage-200); }
+.ev-word { font-size: 30px; }
