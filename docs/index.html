@@ -4,393 +4,317 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CalmCampus — Stop burnout before it starts</title>
-  <meta name="description" content="CalmCampus detects early signs of student burnout through passive behavioral signals and delivers AI-powered micro-interventions. Privacy-first. Built for universities.">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="assets/logo.png">
+  <meta name="description" content="CalmCampus helps students notice early signs of burnout and take small steps before things pile up. All data stays on your phone. Preparing a pilot at KU Leuven, then Belgium and the Netherlands.">
+  <meta name="theme-color" content="#f5ead8">
+  <meta property="og:title" content="CalmCampus — Stop burnout before it starts">
+  <meta property="og:description" content="A student wellness app where all data stays on-device. Preparing a pilot at KU Leuven.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/first-sprout-favicon-32.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/brand/first-sprout-favicon-512.png">
+  <link rel="apple-touch-icon" href="assets/brand/first-sprout-app-icon-180.png">
+  <link rel="preload" href="assets/fonts/caprasimo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="site.css">
 </head>
 <body>
 
-  <!-- ── Navigation ─────────────────────────────────────────────────────── -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <img src="assets/logo.png" alt="CalmCampus" class="nav-logo-img">
+  <!-- Lucide icons (stroke 2.75, per brand guide) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+      <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ── Nav ─────────────────────────────────────────────────────────────── -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="#" class="nav-logo" aria-label="CalmCampus home">
+        <img src="assets/brand/first-sprout-horizontal-color.svg" alt="CalmCampus" width="222" height="34">
       </a>
       <ul class="nav-links">
-        <li><a href="#problem">Problem</a></li>
-        <li><a href="#product">Product</a></li>
-        <li><a href="#technology">Technology</a></li>
-        <li><a href="#market">Market</a></li>
-        <li><a href="report.html">Impact Report</a></li>
+        <li><a href="#why">Why</a></li>
+        <li><a href="#app">The app</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#pilot">KU Leuven pilot</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="report.html">Impact report</a></li>
       </ul>
-      <a href="#invest" class="btn btn-sm">Get in touch</a>
+      <a href="#contact" class="btn btn-primary btn-sm">Get in touch</a>
     </div>
-  </nav>
+  </header>
 
-  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <main>
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-badge">🏆 KU Leuven KICK Challenge 2026</div>
-      <h1 class="hero-title">
-        Stop burnout<br>before it starts.
-      </h1>
-      <p class="hero-sub">
-        CalmCampus detects the early signs of student burnout through passive
-        behavioral signals — sleep, screen time, activity — and delivers
-        evidence-based micro-interventions powered by AI.<br>
-        <strong>All data stays on-device. Always.</strong>
-      </p>
-      <div class="hero-ctas">
-        <a href="#product" class="btn btn-primary">See the product</a>
-        <a href="#invest" class="btn btn-ghost">Invest in us →</a>
-      </div>
-      <a href="report.html" class="hero-report-link">📋 Read our Impact Report →</a>
-    </div>
-    <div class="hero-glow"></div>
-  </section>
-
-  <!-- ── Stats strip ────────────────────────────────────────────────────── -->
-  <section class="stats-strip">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-number">1 in 3</div>
-          <div class="stat-label">university students experiences burnout symptoms</div>
+    <div class="circle circle-sage c1" aria-hidden="true"></div>
+    <div class="circle circle-terra c2" aria-hidden="true"></div>
+    <div class="circle circle-ring c3" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <div class="hero-tags">
+          <span class="tag tag-sage">Student wellness, on-device</span>
+          <span class="tag tag-terra">Preparing our KU Leuven pilot</span>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-number">€3.2B</div>
-          <div class="stat-label">annual cost of student mental health issues in the EU</div>
+        <h1>Stop burnout before it starts.</h1>
+        <p class="lead">CalmCampus helps students notice the early signs of burnout and take one small step while it is still easy. A minute a day, and your data stays on your phone.</p>
+        <div class="hero-ctas">
+          <a href="#pilot" class="btn btn-primary">See the pilot <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a href="#app" class="btn btn-secondary">How it works</a>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-number">68%</div>
-          <div class="stat-label">of students who drop out cite mental health as a factor</div>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-number">20M+</div>
-          <div class="stat-label">university students in Europe — our addressable market</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Problem ────────────────────────────────────────────────────────── -->
-  <section class="section" id="problem">
-    <div class="container">
-      <div class="section-label-tag">The Problem</div>
-      <h2 class="section-title">Burnout is invisible<br>until it's too late.</h2>
-      <p class="section-sub">
-        Student burnout doesn't appear overnight. It builds over weeks through
-        disrupted sleep, excessive screen time, and declining activity — signals
-        that are completely invisible to counsellors and universities until a
-        student is already in crisis.
-      </p>
-      <div class="problem-cards">
-        <div class="problem-card">
-          <div class="problem-icon">😴</div>
-          <h3>Late detection</h3>
-          <p>Universities only learn about mental health struggles when students seek help — often months into a crisis.</p>
-        </div>
-        <div class="problem-card">
-          <div class="problem-icon">🔇</div>
-          <h3>Stigma &amp; silence</h3>
-          <p>60% of struggling students never contact their university's wellbeing services due to stigma or access barriers.</p>
-        </div>
-        <div class="problem-card">
-          <div class="problem-icon">📉</div>
-          <h3>Reactive care</h3>
-          <p>Current solutions are reactive. Therapy waitlists, crisis lines, and counselling don't prevent burnout — they respond to it.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Product ────────────────────────────────────────────────────────── -->
-  <section class="section section-alt" id="product">
-    <div class="container">
-      <div class="section-label-tag">The Product</div>
-      <h2 class="section-title">Your personal wellness<br>early warning system.</h2>
-      <p class="section-sub">
-        CalmCampus runs silently in the background, building a behavioral baseline
-        unique to each student. When signals drift, it intervenes early — with
-        breathing exercises, grounding techniques, and CBT-based prompts that
-        take less than 5 minutes.
-      </p>
-
-      <div class="screens-showcase">
-        <!-- Replace src values with your screenshots after capturing them -->
-        <div class="phone-frame phone-frame--side">
-          <img src="assets/screens/profile.png" alt="Profile screen showing streaks and achievements" onerror="this.parentElement.classList.add('placeholder')">
-          <div class="phone-placeholder-label">Profile &amp; Achievements</div>
-        </div>
-        <div class="phone-frame phone-frame--center">
-          <img src="assets/screens/home.png" alt="Home dashboard showing wellness score and signals" onerror="this.parentElement.classList.add('placeholder')">
-          <div class="phone-placeholder-label">Wellness Dashboard</div>
-        </div>
-        <div class="phone-frame phone-frame--side">
-          <img src="assets/screens/insights.png" alt="Insights screen showing 7-day trends" onerror="this.parentElement.classList.add('placeholder')">
-          <div class="phone-placeholder-label">7-Day Insights</div>
-        </div>
+        <p class="hero-note">
+          <svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>
+          No cloud AI, no analytics, no accounts needed to look around.
+        </p>
       </div>
 
-      <div class="features-grid">
-        <div class="feature-item">
-          <div class="feature-icon" style="background:rgba(123,148,96,0.12);color:#7B9460">📡</div>
-          <div>
-            <h4>Passive sensing</h4>
-            <p>Monitors steps, sleep, screen time, and focus — no manual input required.</p>
-          </div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon" style="background:rgba(0,122,255,0.10);color:#007AFF">🧠</div>
-          <div>
-            <h4>AI wellness score</h4>
-            <p>A daily score powered by on-device ML that reflects your current behavioral baseline.</p>
-          </div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon" style="background:rgba(255,159,10,0.12);color:#FF9F0A">⚡</div>
-          <div>
-            <h4>Anomaly alerts</h4>
-            <p>Detects deviations from your personal baseline before they escalate.</p>
-          </div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon" style="background:rgba(88,86,214,0.12);color:#5856D6">🫁</div>
-          <div>
-            <h4>Micro-interventions</h4>
-            <p>Evidence-based CBT &amp; ACT exercises, guided breathing, and grounding techniques.</p>
-          </div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon" style="background:rgba(255,45,85,0.10);color:#FF3B30">🏫</div>
-          <div>
-            <h4>Campus resources</h4>
-            <p>Direct integration with KU Leuven student support services and crisis contacts.</p>
-          </div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon" style="background:rgba(123,148,96,0.12);color:#7B9460">🔒</div>
-          <div>
-            <h4>Zero data leaving the device</h4>
-            <p>All processing happens on-device. No cloud sync. GDPR-native by design.</p>
+      <div class="hero-visual">
+        <div class="phone" role="img" aria-label="The CalmCampus daily check-in asking: How are you feeling today?">
+          <div class="phone-screen">
+            <div class="phone-top">
+              <img src="assets/brand/first-sprout-mark-color.svg" alt="" width="22" height="22">
+              <span class="phone-step">1 of 3</span>
+            </div>
+            <div class="phone-progress"><i></i><i></i><i></i></div>
+            <div class="phone-q">How are you feeling today?</div>
+            <div class="phone-scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+            <div class="phone-labels"><span>Very low</span><span>Very good</span></div>
+            <div class="phone-skip">Skip</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── How it works ───────────────────────────────────────────────────── -->
-  <section class="section" id="how-it-works">
-    <div class="container">
-      <div class="section-label-tag">How It Works</div>
-      <h2 class="section-title">Four steps to early<br>burnout prevention.</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">01</div>
-          <h3>Passive monitoring</h3>
-          <p>CalmCampus silently collects behavioral signals — steps, sleep duration, screen time, and focus sessions — with zero manual effort from the student.</p>
+  <!-- ── Why ─────────────────────────────────────────────────────────────── -->
+  <section class="section section-sand" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="label">Why CalmCampus</div>
+        <h2>Burnout is quiet while it builds.</h2>
+        <p class="lead">It rarely arrives overnight. Sleep slips, days get smaller, deadlines stack up. Most students only reach out once it already feels heavy, and by then the way back is longer.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="icon"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></div>
+          <h3>Support comes late</h3>
+          <p>Student services mostly meet students after a rough patch has set in. We want to be there in the weeks before.</p>
         </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-number">02</div>
-          <h3>Baseline building</h3>
-          <p>Over the first two weeks, the app builds a personalized behavioral baseline specific to each student's unique patterns and rhythms.</p>
+        <div class="card">
+          <div class="icon terra"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg></div>
+          <h3>Asking for help is hard</h3>
+          <p>Stigma, waiting lists and not knowing where to start keep many students from reaching out at all.</p>
         </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-number">03</div>
-          <h3>Anomaly detection</h3>
-          <p>When signals deviate from the baseline — poor sleep, high screen time, low activity — the AI flags early warning signs before they become a crisis.</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-number">04</div>
-          <h3>Micro-interventions</h3>
-          <p>The app delivers targeted, 3–5 minute interventions: breathing exercises, grounding techniques, gratitude prompts, and CBT-based cognitive reframing.</p>
+        <div class="card">
+          <div class="icon"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></div>
+          <h3>Small signs get missed</h3>
+          <p>Sleep, movement and mood tell a story over time. Nobody sees it, least of all the student living in the middle of it.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Technology ─────────────────────────────────────────────────────── -->
-  <section class="section section-dark" id="technology">
-    <div class="container">
-      <div class="section-label-tag section-label-tag--light">Technology</div>
-      <h2 class="section-title section-title--light">Privacy-first.<br>By architecture, not policy.</h2>
-      <p class="section-sub section-sub--light">
-        CalmCampus is built on a principle most health apps ignore: your mental
-        health data should never leave your device. Our on-device ML pipeline
-        means no central database can be breached, no data can be sold, and
-        no GDPR consent banners are needed — because there's nothing to consent to.
-      </p>
-      <div class="tech-grid">
-        <div class="tech-card">
-          <div class="tech-icon">📱</div>
-          <h4>Flutter (iOS &amp; Android)</h4>
-          <p>Single codebase, native performance. Built for real device sensors — pedometer, screen time APIs, and notification scheduling.</p>
+  <!-- ── App ─────────────────────────────────────────────────────────────── -->
+  <section class="section" id="app">
+    <div class="wrap product-grid">
+      <div class="product-stage" aria-hidden="true">
+        <div class="circle circle-sage c1"></div>
+        <div class="circle circle-terra c2"></div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-top">
+              <img src="assets/brand/first-sprout-mark-color.svg" alt="" width="22" height="22">
+              <span class="phone-step">3 of 3</span>
+            </div>
+            <div class="phone-progress"><i style="background:var(--sage)"></i><i style="background:var(--sage)"></i><i style="background:var(--sage)"></i></div>
+            <div class="phone-q">How stressed do you feel today?</div>
+            <div class="phone-scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+            <div class="phone-labels"><span>Not at all</span><span>Extremely</span></div>
+            <div class="phone-skip">Skip</div>
+          </div>
         </div>
-        <div class="tech-card">
-          <div class="tech-icon">🤖</div>
-          <h4>On-device ML</h4>
-          <p>Behavioral anomaly detection and wellness scoring run entirely on the student's device. Zero server roundtrips for health data.</p>
+      </div>
+
+      <div>
+        <div class="label">The app</div>
+        <h2 style="margin-bottom:20px">A calm minute, every day.</h2>
+        <p class="lead" style="margin-bottom:40px">CalmCampus is a native iPhone app, with Android to follow. It listens a little, asks a little, and suggests something small that fits your day.</p>
+        <ol class="steps">
+          <li>
+            <div>
+              <h3>A short daily check-in</h3>
+              <p>Three quick questions about mood, energy and stress. Every question can be skipped. When something looks off, like a short night, it may ask one gentle follow-up. Never more than five in total.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>Your own baseline</h3>
+              <p>Sleep and activity from your phone are compared with your own normal, not with other people. Missing data stays missing. We never fill gaps with guesses.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>One small step <span class="tag tag-sage badge-soon">Being rebuilt</span></h3>
+              <p>Short breathing and grounding exercises, plus pointers to your university's student support when you want a person to talk to. We are bringing these across from our first prototype.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Privacy ─────────────────────────────────────────────────────────── -->
+  <section class="section section-dark" id="privacy">
+    <div class="circle circle-ring c1" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="label">Privacy</div>
+        <h2>Your data stays on your phone.</h2>
+        <p class="lead">Privacy is how the app is built, not a line in a policy. What you share with CalmCampus is for you, and it never becomes something a university can look up.</p>
+      </div>
+      <div class="privacy-grid">
+        <div class="privacy-item">
+          <svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>
+          <h3>On-device only</h3>
+          <p>Check-ins and sensor data are stored on your phone. There is no server holding them.</p>
         </div>
-        <div class="tech-card">
-          <div class="tech-icon">🔐</div>
-          <h4>GDPR-native</h4>
-          <p>No data collection means no compliance burden. Data is stored locally in Hive (encrypted) and never leaves the device.</p>
+        <div class="privacy-item">
+          <svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg>
+          <h3>No cloud AI</h3>
+          <p>Any AI runs on the device itself. Nothing you write is sent to an outside service.</p>
         </div>
-        <div class="tech-card">
-          <div class="tech-icon">🧬</div>
-          <h4>CBT &amp; ACT frameworks</h4>
-          <p>Every intervention is grounded in peer-reviewed Cognitive Behavioral Therapy and Acceptance &amp; Commitment Therapy evidence bases.</p>
+        <div class="privacy-item">
+          <svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>
+          <h3>No analytics</h3>
+          <p>No trackers and no ad networks. Nothing about an individual student reaches the university.</p>
+        </div>
+        <div class="privacy-item">
+          <svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+          <h3>Wellness, not diagnosis</h3>
+          <p>CalmCampus spots early signs and supports good habits. It does not diagnose or replace professional care.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Market ─────────────────────────────────────────────────────────── -->
-  <section class="section" id="market">
-    <div class="container">
-      <div class="section-label-tag">Market Opportunity</div>
-      <h2 class="section-title">A €3.2B problem.<br>No scalable solution yet.</h2>
-      <p class="section-sub">
-        The student mental health market is underserved and growing. Universities
-        are under increasing pressure from accreditation bodies to demonstrate
-        student wellbeing outcomes. CalmCampus is the only privacy-first,
-        behaviorally-grounded solution built specifically for this audience.
-      </p>
-      <div class="market-circles">
-        <div class="market-circle market-circle--tam">
-          <div class="market-circle-inner">
-            <div class="market-label">TAM</div>
-            <div class="market-value">20M+</div>
-            <div class="market-desc">EU university students</div>
-          </div>
+  <!-- ── Pilot ───────────────────────────────────────────────────────────── -->
+  <section class="section" id="pilot">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="label">KU Leuven pilot</div>
+        <h2>We are preparing our first pilot in Leuven.</h2>
+        <p class="lead">Leuven is where CalmCampus began, at the KU Leuven KICK Challenge 2026. The pilot is the next step: put the app in real students' hands, learn what helps, and do it carefully.</p>
+      </div>
+      <div class="pilot-grid">
+        <div class="panel">
+          <h3>What we want to learn</h3>
+          <ul>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Do students keep up the daily check-in, and is a minute really light enough?</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Which small steps do students actually try, and which ones help?</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Does the app feel safe, kind and private to the people using it?</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>How can it sit alongside the student services that already exist?</span></li>
+          </ul>
         </div>
-        <div class="market-circle market-circle--sam">
-          <div class="market-circle-inner">
-            <div class="market-label">SAM</div>
-            <div class="market-value">350K</div>
-            <div class="market-desc">Belgian university students</div>
-          </div>
-        </div>
-        <div class="market-circle market-circle--som">
-          <div class="market-circle-inner">
-            <div class="market-label">SOM</div>
-            <div class="market-value">65K</div>
-            <div class="market-desc">KU Leuven students (Year 1)</div>
-          </div>
+        <div class="panel panel-sage">
+          <h3>Who we would like to talk to</h3>
+          <ul>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-cap"/></svg><span><strong>Students</strong> who would like to try the app early and tell us honestly what works.</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg><span><strong>Student wellbeing teams</strong> and counsellors who can help us do this responsibly.</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-activity"/></svg><span><strong>Researchers</strong> in student mental health, ethics and privacy-preserving technology.</span></li>
+          </ul>
         </div>
       </div>
-      <div class="market-note">
-        Beyond students: the same behavioral sensing platform applies to
-        corporate wellness, military training programs, and any institution
-        managing high-performance individuals under sustained stress.
-      </div>
+      <p class="pilot-foot">The pilot is still being shaped and nothing is final yet. Pilot participation will be voluntary, and everything we measure will stay on-device unless a participant chooses otherwise.</p>
     </div>
   </section>
 
-  <!-- ── Traction ───────────────────────────────────────────────────────── -->
-  <section class="section section-alt">
-    <div class="container">
-      <div class="section-label-tag">Traction</div>
-      <h2 class="section-title">Built in 6 weeks.<br>Pitching today.</h2>
-      <div class="traction-timeline">
-        <div class="traction-item traction-item--done">
-          <div class="traction-dot"></div>
-          <div class="traction-content">
-            <div class="traction-date">March 2026</div>
-            <h4>Concept &amp; validation</h4>
-            <p>Problem validated through surveys with KU Leuven students. 78% reported burnout symptoms. 91% said they'd use an app that detected it early.</p>
-          </div>
+  <!-- ── Roadmap ─────────────────────────────────────────────────────────── -->
+  <section class="section section-sand" id="roadmap">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="label">Roadmap</div>
+        <h2>From Leuven to Belgium and the Netherlands.</h2>
+        <p class="lead">We would rather get one campus right than reach many campuses badly. Each step builds on what the previous one teaches us.</p>
+      </div>
+      <div class="road">
+        <div class="stop done">
+          <div class="stop-dot"></div>
+          <div class="stop-when">Built</div>
+          <h3>The iPhone app</h3>
+          <p>A native app with the adaptive daily check-in. Android is next, built natively too.</p>
         </div>
-        <div class="traction-item traction-item--done">
-          <div class="traction-dot"></div>
-          <div class="traction-content">
-            <div class="traction-date">April 2026</div>
-            <h4>Working prototype</h4>
-            <p>Full Flutter app built with passive sensing, AI wellness scoring, anomaly detection, and a complete intervention library.</p>
-          </div>
+        <div class="stop now">
+          <div class="stop-dot"></div>
+          <div class="stop-when">Now</div>
+          <h3>KU Leuven pilot</h3>
+          <p>Preparing the first pilot with students and student services in Leuven.</p>
         </div>
-        <div class="traction-item traction-item--now">
-          <div class="traction-dot"></div>
-          <div class="traction-content">
-            <div class="traction-date">April 27–29, 2026</div>
-            <h4>🏆 KU Leuven KICK Challenge finals</h4>
-            <p>Selected to pitch at KU Leuven's flagship student startup competition.</p>
-          </div>
+        <div class="stop">
+          <div class="stop-dot"></div>
+          <div class="stop-when">Next</div>
+          <h3>Across Belgium</h3>
+          <p>Bring what worked to other Flemish and Belgian universities and university colleges.</p>
         </div>
-        <div class="traction-item traction-item--next">
-          <div class="traction-dot"></div>
-          <div class="traction-content">
-            <div class="traction-date">Summer 2026</div>
-            <h4>Pilot at KU Leuven</h4>
-            <p>Closed beta with 200 students. Partnership with student wellbeing services. IRB approval for longitudinal study.</p>
-          </div>
-        </div>
-        <div class="traction-item traction-item--next">
-          <div class="traction-dot"></div>
-          <div class="traction-content">
-            <div class="traction-date">2027</div>
-            <h4>University partnerships &amp; scale</h4>
-            <p>Expand to 5 Belgian universities. B2B licensing model for institutional wellbeing dashboards (aggregated, anonymised data only).</p>
-          </div>
+        <div class="stop">
+          <div class="stop-dot"></div>
+          <div class="stop-when">Then</div>
+          <h3>The Netherlands</h3>
+          <p>Partner with Dutch universities, with local support contacts and wording for each campus.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Investment CTA ─────────────────────────────────────────────────── -->
-  <section class="section section-dark section-invest" id="invest">
-    <div class="container">
-      <div class="section-label-tag section-label-tag--light">Get Involved</div>
-      <h2 class="section-title section-title--light">Join us in building<br>the future of student wellbeing.</h2>
-      <p class="section-sub section-sub--light">
-        We're looking for partners, angels, and institutional investors who believe
-        that mental health infrastructure is the next frontier in education technology.
-        If that resonates with you, let's talk.
-      </p>
-      <div class="invest-cards">
-        <div class="invest-card">
-          <h4>🌱 Seed investment</h4>
-          <p>Help us run our KU Leuven pilot, hire our first clinical advisor, and begin the IRB study that proves clinical efficacy.</p>
+  <!-- ── Contact ─────────────────────────────────────────────────────────── -->
+  <section class="section contact" id="contact">
+    <div class="circle c1" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="label">Get in touch</div>
+      <h2>Help us do this well.</h2>
+      <p class="lead">Whether you study, teach, counsel, research or fund, we would like to hear from you. We reply to every message.</p>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <h3>Students</h3>
+          <p>Want to try the app early or share what would help? Tell us about your study life.</p>
         </div>
-        <div class="invest-card">
-          <h4>🏫 University partnership</h4>
-          <p>Integrate CalmCampus with your institution's student wellbeing services. White-label options available.</p>
+        <div class="contact-card">
+          <h3>Universities</h3>
+          <p>Interested in a pilot at your institution in Belgium or the Netherlands? Let us talk.</p>
         </div>
-        <div class="invest-card">
-          <h4>🤝 Strategic partnership</h4>
-          <p>Healthcare providers, insurers, and EdTech platforms — let's explore what a deeper collaboration looks like.</p>
+        <div class="contact-card">
+          <h3>Partners and funders</h3>
+          <p>Care about student wellbeing and privacy-first technology? We would love to explore it together.</p>
         </div>
       </div>
-      <a href="mailto:braunf25@proton.me" class="btn btn-primary btn-large">
-        Contact us → braunf25@proton.me
+      <a href="mailto:braunf25@proton.me" class="btn btn-cream">
+        <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg> braunf25@proton.me
       </a>
     </div>
   </section>
+  </main>
 
-  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <!-- ── Footer ──────────────────────────────────────────────────────────── -->
   <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <img src="assets/logo.png" alt="CalmCampus" class="footer-logo-img">
-        <span class="footer-tagline">— Stop burnout before it starts.</span>
-      </div>
-      <div class="footer-links">
-        <a href="#problem">Problem</a>
-        <a href="#product">Product</a>
-        <a href="#technology">Technology</a>
-        <a href="#market">Market</a>
-        <a href="#invest">Invest</a>
-        <a href="report.html">Impact Report</a>
-      </div>
-      <div class="footer-copy">
-        © 2026 CalmCampus. Built at KU Leuven.
-      </div>
+    <div class="wrap footer-inner">
+      <img src="assets/brand/first-sprout-horizontal-color.svg" alt="CalmCampus" width="222" height="34">
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#why">Why</a>
+        <a href="#app">The app</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#pilot">KU Leuven pilot</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="report.html">Impact report</a>
+      </nav>
+      <p class="footer-copy">© 2026 CalmCampus. Stop burnout before it starts. CalmCampus supports wellbeing and is not a medical service. If you need help right now, please contact your university's student support or local emergency services.</p>
     </div>
   </footer>
 
