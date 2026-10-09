@@ -262,3 +262,18 @@ p { text-wrap: pretty; }
   .card { padding: 26px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Research */
+.sub { font-size: 26px; margin: 8px 0 20px; }
+.evidence { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 48px; }
+.ev { background: var(--cream); border-radius: 28px; padding: 32px; display: flex; flex-direction: column; gap: 12px; }
+.ev-stat { font-family: var(--font-heading); font-size: 44px; line-height: 1; color: var(--terracotta-700); letter-spacing: -0.015em; }
+.ev p { font-size: 16px; color: var(--neutral-800); flex: 1; }
+.ev-cite { font-size: 14px; font-weight: 600; color: var(--sage-700); }
+.ev-cite:hover { color: var(--sage-900); }
+.research-plan { background: var(--sage-200); padding: 40px; }
+.research-plan ul { margin: 20px 0; }
+.plan-note { font-size: 15px; color: var(--neutral-800); max-width: 70ch; margin-bottom: 4px; }
+.research-plan .btn { margin-top: 20px; }
+@media (max-width: 640px) { .research-plan { padding: 28px; } .ev { padding: 26px; } }
+.ev-word { font-size: 32px; padding-top: 6px; }
