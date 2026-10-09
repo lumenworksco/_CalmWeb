@@ -277,3 +277,4 @@ p { text-wrap: pretty; }
 .research-plan .btn { margin-top: 20px; }
 @media (max-width: 640px) { .research-plan { padding: 28px; } .ev { padding: 26px; } }
 .ev-word { font-size: 32px; padding-top: 6px; }
+.dossier-btn { margin-top: 28px; }
