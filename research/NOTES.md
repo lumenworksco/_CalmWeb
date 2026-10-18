@@ -22,6 +22,18 @@ Version 1.0, 9 October 2026. 35 sources, all verified. 31 are legally free to re
 - **RIVM/Trimbos 2025** is a government report, not peer reviewed: Nuijen et al., RIVM-rapport 2025-0106, doi:10.21945/RIVM-2025-0106.
 - **StudentLife (Wang et al. 2014)** is a conference paper in the UbiComp '14 proceedings, pages 3–14. It had 48 students in one class at one college.
 
+## Independent re-check, 18 October 2026
+
+A second pass, made after the dossier was published, using sources that do not depend on the first pass:
+
+- **Metadata:** all 35 DOIs in `index.csv` were compared with Crossref (first author, year, volume, pages, title). 33 match exactly. Two differ only because Crossref stores the subtitle separately (Wang 2014, Iwaya 2023). The RIVM report is not in Crossref.
+- **Figures:** every number in the "sample/design" and "key finding" columns was searched for in the full text of the paper (PubMed Central XML or the PDF), for 29 of 35 sources. Everything was found. Differences were formatting only: Schuch's youth odds ratio (0.90) is printed as "AOR=0.90", and the RIVM report uses Dutch number format (27.446 students, 466.313 enrolled, "bijna 6 procent"; 27,446 / 466,313 = 5.9%).
+- **Sources read in full that earlier were only checked against abstracts:** Scott 2021 (PMC8651630) and Wang 2014 (StudentLife; Wayback copy of the author PDF: r = -0.360 for sleep duration, r = -0.403 for conversation frequency, 48 students, 10 weeks).
+- **Checked against abstracts only (paywalled):** Clement 2015, Hertenstein 2019 (OR 2.83 and 3.23, 13 studies), Melcher & Torous 2020, Liu 2026 (79 trials, 92 app conditions, adherence 61.8%, attrition 18.6% / 28.4%). All figures match.
+- **Website:** every percentage and large number on `docs/index.html` and `docs/report.html` appears in `research_log.md` or `index.csv`.
+
+One open item: the RIVM report prints the DOI `10.21945/RIVM-2025-0106`, but it does not resolve at doi.org yet (404, handle not registered). It is cited as printed. The direct report link is https://www.rivm.nl/bibliotheek/rapporten/2025-0106.pdf. Re-test later and, if it stays unregistered, swap the URL in `index.csv` and the dossier.
+
 ## Unverified (left out of the dossier)
 
 - **RIVM/Trimbos 2025, chart values**: emotional exhaustion (56% in 2025), loneliness (53%), performance pressure (60%) and high stress (41%) appear in Figure 1 of the English factsheet but could not be tied to their labels with certainty, so they are not used. The full report is now in `papers/` (Table 2.1) if you want to add them.

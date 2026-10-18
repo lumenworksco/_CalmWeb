@@ -7,4 +7,4 @@ Backing for the claims on the website. Version 1.0 of the dossier is `CalmCampus
 - `research_log.md`: which number came from which source
 - `download_papers.sh`: re-downloads the open-access papers into `papers/` (gitignored: third-party copyright)
 
-Before sending to an ethics board: spot-check key figures against the final published PDFs and complete truncated author lists (see `NOTES.md`).
+Verification: every figure was checked against full texts (or abstracts for paywalled papers) and all references against Crossref; see `NOTES.md`, including the independent re-check of 18 October 2026. One open item: the RIVM report's DOI does not resolve yet.
