@@ -16,6 +16,10 @@ language sql stable security definer set search_path = '' as $$
   select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
 
+-- Policies call this as the signed-in user, so it must be executable by them even when the project
+-- does not grant execute on new functions by default.
+grant execute on function public.is_admin() to authenticated;
+
 create table public.forms (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$' and length(slug) between 3 and 60),

@@ -39,7 +39,7 @@
 :root[data-theme="dark"][data-accent="sage"] { --accent: #b4c98c; --accent-hover: #c8d9a8; --focus: #c8d9a8; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body.cc-form-page { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; min-height: 100dvh; }
+body.cc-form-page { overflow-x: clip; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; min-height: 100dvh; }
 .cc-form a { color: var(--link); text-underline-offset: 3px; }
 .cc-form :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 10px; }
 .cc-form h1, .cc-form h2 { font-family: var(--font-heading); font-weight: 400; line-height: 1.1; letter-spacing: -0.015em; text-wrap: balance; }
@@ -50,7 +50,7 @@ body.cc-form-page { background: var(--bg); color: var(--fg); font-family: var(--
 .cc-form { position: relative; max-width: 680px; margin: 0 auto; padding: 20px 20px 80px; }
 .cc-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 4px 0 20px; }
 .cc-top img { height: 30px; width: auto; }
-.cc-cover { position: absolute; inset: 0 0 auto 0; height: 200px; overflow: hidden; z-index: -1; pointer-events: none; }
+.cc-cover { position: absolute; top: 0; left: 50%; width: 100vw; transform: translateX(-50%); height: 200px; overflow: hidden; z-index: -1; pointer-events: none; }
 .cc-cover i { position: absolute; border-radius: 50%; }
 .cc-cover i:nth-child(1) { width: 200px; height: 200px; right: -90px; top: -100px; background: var(--sage); opacity: .55; }
 .cc-cover i:nth-child(2) { width: 64px; height: 64px; right: 70px; top: 54px; background: var(--terracotta); opacity: .5; }
@@ -100,7 +100,7 @@ body.cc-form-page { background: var(--bg); color: var(--fg); font-family: var(--
 /* ── Questions ────────────────────────────────────────────────────────────────────── */
 .cc-q { border: 0; margin: 0 0 36px; min-width: 0; }
 .cc-q > legend, .cc-q > label.cc-label { display: block; font-size: 21px; font-weight: 700; line-height: 1.35; margin-bottom: 6px; padding: 0; }
-.cc-q .opt { display: inline-block; font-weight: 500; font-size: 14px; color: var(--fg-soft); margin-left: 8px; white-space: nowrap; vertical-align: baseline; }
+.cc-q .opt { display: inline-block; font-weight: 500; font-size: 14px; color: var(--fg-soft); margin-left: 0; white-space: nowrap; vertical-align: baseline; }
 .cc-help { font-size: 16px; color: var(--fg-soft); margin-bottom: 12px; }
 .cc-err { color: var(--error); font-size: 16px; font-weight: 600; margin-top: 8px; display: flex; gap: 8px; }
 .cc-err::before { content: "!"; flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--error); color: var(--bg); font-size: 14px; font-weight: 800; display: grid; place-items: center; margin-top: 3px; }
@@ -190,4 +190,6 @@ body.cc-form-page { background: var(--bg); color: var(--fg); font-family: var(--
   .cc-screen { animation: none; }
   .cc-progress > div, .cc-btn, .cc-choice span.box, .cc-choice span.box::before { transition: none; }
 }
+@media (max-width: 699px) { .cc-cover i:nth-child(2) { display: none; } }
+@media (min-width: 900px) { .cc-form { padding-top: 36px; padding-bottom: 120px; } .cc-screen h1 { font-size: 56px; } .cc-lead { font-size: 21px; } }
 @media (max-width: 420px) { .cc-form { padding: 14px 16px 64px; } .cc-scale .cc-choice span.box { font-size: 18px; } }

@@ -70,12 +70,11 @@ export function createFake() {
     const isAdmin = auth === `Bearer ${ADMIN_TOKEN}`;
     const body = ['POST', 'PATCH', 'PUT'].includes(request.method) ? await request.json().catch(() => ({})) : null;
 
-    // GoTrue (email code login; the dev code is always 000000)
+    // GoTrue (password and link login; any credentials are accepted in development)
     if (path === '/auth/v1/otp') return json({});
-    if (path === '/auth/v1/verify') return body.token === '000000'
-      ? json({ access_token: ADMIN_TOKEN, refresh_token: 'dev-refresh', token_type: 'bearer', expires_in: 3600, user: { id: 'dev-admin', email: body.email } })
-      : json({ error: 'invalid', msg: 'Token has expired or is invalid' }, 403);
+    if (path === '/auth/v1/verify') return json({ access_token: ADMIN_TOKEN, refresh_token: 'dev-refresh', token_type: 'bearer', expires_in: 3600, user: { id: 'dev-admin', email: body.email } });
     if (path === '/auth/v1/token') return json({ access_token: ADMIN_TOKEN, refresh_token: 'dev-refresh', token_type: 'bearer', expires_in: 3600, user: { id: 'dev-admin', email: 'dev@localhost' } });
+    if (path === '/auth/v1/user') return json({ id: 'dev-admin', email: 'dev@localhost' });
     if (path === '/auth/v1/logout') return new Response(null, { status: 204 });
 
     if (path.startsWith('/rest/v1/rpc/')) {

@@ -2,11 +2,11 @@ name = "calmweb-forms"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
 
-# Production routes (the zone must be on Cloudflare; proxy the cc.braunf.com record).
-# routes = [
-#   { pattern = "cc.braunf.com/api/*", zone_name = "braunf.com" },
-#   { pattern = "cc.braunf.com/f/*",   zone_name = "braunf.com" },
-# ]
+# Production routes. They only take effect once the cc.braunf.com DNS record is proxied (orange cloud).
+routes = [
+  { pattern = "cc.braunf.com/api/*", zone_name = "braunf.com" },
+  { pattern = "cc.braunf.com/f/*",   zone_name = "braunf.com" },
+]
 
 [triggers]
 crons = ["17 * * * *"]   # hourly: retention purge + re-shuffle of anonymous tables

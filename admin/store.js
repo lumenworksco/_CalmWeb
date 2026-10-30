@@ -40,11 +40,26 @@ const rows = async (path, opts) => { const r = await api(path, opts); return r.s
 export const auth = {
   get signedIn() { return !!session; },
   get email() { return session?.user?.email || ''; },
-  async sendCode(email) { const r = await raw('/auth/v1/otp', { method: 'POST', body: { email, create_user: false }, auth: false }); if (!r.ok) throw new Error('Couldn’t send a code. Check the address.'); },
-  async verify(email, token) {
-    const r = await raw('/auth/v1/verify', { method: 'POST', body: { type: 'email', email, token }, auth: false });
-    if (!r.ok) throw new Error('That code didn’t work. It may have expired.');
+  // Email + password: the reliable path. Accounts are invite-only (sign-ups are off in Supabase).
+  async signIn(email, password) {
+    const r = await raw('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password }, auth: false });
+    if (!r.ok) throw new Error('That email and password didn’t match.');
     save(await r.json());
+  },
+  // Email a one-time sign-in link (works with Supabase's default email, no custom template needed).
+  async sendLink(email) {
+    const r = await raw('/auth/v1/otp', { method: 'POST', body: { email, create_user: false }, auth: false });
+    if (!r.ok) throw new Error('Couldn’t send a link. Check the address.');
+  },
+  // Coming back from the emailed link: Supabase puts the session in the URL fragment.
+  async consumeHash() {
+    const m = location.hash.match(/^#.*access_token=/); if (!m) return false;
+    const p = new URLSearchParams(location.hash.slice(1));
+    const access = p.get('access_token'); if (!access) return false;
+    history.replaceState(null, '', location.pathname + '#/');
+    const u = await fetch(base() + '/auth/v1/user', { headers: { apikey: config.anonKey, authorization: `Bearer ${access}` } });
+    if (!u.ok) return false;
+    save({ access_token: access, refresh_token: p.get('refresh_token'), user: await u.json() }); return true;
   },
   async signOut() { try { await raw('/auth/v1/logout', { method: 'POST' }); } catch { /* ignore */ } save(null); },
   async isAdmin() { try { return (await rows('/rest/v1/admins?select=user_id')).length > 0; } catch { return false; } },

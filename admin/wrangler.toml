@@ -1,0 +1,12 @@
+# The admin is static files served from their own origin (separate from cc.braunf.com, so respondent
+# free text rendered in the admin can never share an origin with the public site).
+# Deploy with: bash scripts/deploy-admin.sh
+name = "calmweb-admin"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[assets]
+directory = "../dist-admin"
+
+[observability]
+enabled = false
