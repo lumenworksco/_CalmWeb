@@ -1,0 +1,25 @@
+name = "calmweb-forms"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# Production routes (the zone must be on Cloudflare; proxy the cc.braunf.com record).
+# routes = [
+#   { pattern = "cc.braunf.com/api/*", zone_name = "braunf.com" },
+#   { pattern = "cc.braunf.com/f/*",   zone_name = "braunf.com" },
+# ]
+
+[triggers]
+crons = ["17 * * * *"]   # hourly: retention purge + re-shuffle of anonymous tables
+
+[observability]
+enabled = false          # no request logging: part of the anonymity promise
+
+# Optional edge rate limiting (unsafe binding name is the current one for Workers Rate Limiting).
+# [[unsafe.bindings]]
+# name = "RATE_LIMIT"
+# type = "ratelimit"
+# namespace_id = "1001"
+# simple = { limit = 10, period = 60 }
+
+# Secrets (never in git): wrangler secret put SUPABASE_URL | SUPABASE_SERVICE_KEY | CHALLENGE_SECRET
+# Local dev: copy .dev.vars.example to .dev.vars
