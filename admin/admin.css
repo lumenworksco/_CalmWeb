@@ -108,7 +108,7 @@ table.t th, table.t td { padding: 8px 12px; border-bottom: 1px solid var(--line)
 table.t th { position: sticky; top: 0; background: var(--card); white-space: nowrap; }
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: all .25s; font-weight: 600; z-index: 100; }
 .toast.on { opacity: 1; transform: translateX(-50%); }
-dialog { border: 0; border-radius: 22px; padding: 24px; background: var(--bg); color: var(--fg); max-width: min(480px, 92vw); box-shadow: 0 20px 60px rgb(0 0 0 / .35); }
+dialog { margin: auto; max-height: 90vh; overflow-y: auto; border: 0; border-radius: 22px; padding: 24px; background: var(--bg); color: var(--fg); max-width: min(480px, 92vw); box-shadow: 0 20px 60px rgb(0 0 0 / .35); }
 dialog::backdrop { background: rgb(0 0 0 / .45); }
 dialog h2 { font-size: 24px; margin-bottom: 8px; } dialog p { margin-bottom: 14px; }
 dialog .row { justify-content: flex-end; margin-top: 16px; }
@@ -141,3 +141,13 @@ dialog .row { justify-content: flex-end; margin-top: 16px; }
 
 .insp .hint { margin: 10px 0 16px; }
 .tabs .btn { align-self: center; margin: 6px 0; }
+
+.bar .btn, .bar .stateline { white-space: nowrap; flex: none; }
+@media (max-width: 600px) {
+  .bar { gap: 8px; padding: 8px 12px; }
+  .bar img { height: 24px; }
+  .bar .crumb { display: none; }
+  .bar > a { margin-right: auto; }
+  .tabs { padding: 0 8px; }
+  .page, .settings, .share, .results { padding-left: 14px; padding-right: 14px; }
+}
