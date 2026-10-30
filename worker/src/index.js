@@ -135,6 +135,21 @@ export async function handleApi(request, env, url) {
   return json({ error: 'not found' }, 404);
 }
 
+const esc = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Link previews (LinkedIn, chat apps) read the HTML without running scripts, so the form's real title and
+// intro are put into the page here. Falls back to the plain shell if the form can't be read.
+async function withPreview(html, env, slug, url) {
+  try {
+    const f = await rpc(env, 'get_public_form', { p_slug: slug });
+    if (!f) return html;
+    const title = esc(`${f.title} · CalmCampus`);
+    const desc = esc((f.settings?.intro || 'A short, anonymous form from CalmCampus.').slice(0, 200));
+    const tags = `<meta name="description" content="${desc}">\n  <meta property="og:type" content="website">\n  <meta property="og:site_name" content="CalmCampus">\n  <meta property="og:title" content="${title}">\n  <meta property="og:description" content="${desc}">\n  <meta property="og:url" content="${esc(url.origin + url.pathname)}">\n  <meta property="og:image" content="${esc(url.origin)}/assets/og-image.png">\n  <meta name="twitter:card" content="summary_large_image">\n`;
+    return html.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`).replace('</head>', `  ${tags}</head>`);
+  } catch { return html; }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -146,10 +161,18 @@ export default {
     }
     // /f/<slug> serves the static form shell; everything else passes through to the site.
     const target = env.ORIGIN ? new URL(url.pathname + url.search, env.ORIGIN) : null;
+    // GitHub Pages lets browsers keep files for hours, which would leave visitors on an old form after an
+    // update. The form's own files are therefore always revalidated (a cheap 304), and the edge keeps them
+    // for a minute only.
+    const fresh = (res) => { const out = new Response(res.body, res); out.headers.set('cache-control', 'no-cache'); return out; };
     if (/^\/f\/[a-z0-9]+(-[a-z0-9]+)*\/?$/.test(url.pathname)) {
       const shell = target ? new URL('/f/index.html', target) : new URL('/f/index.html', url);
-      const res = await fetch(shell.toString());
-      return new Response(res.body, { status: res.status, headers: { ...Object.fromEntries(res.headers), 'x-robots-tag': 'noindex', 'referrer-policy': 'no-referrer' } });
+      const res = await fetch(shell.toString(), { cf: { cacheTtl: 60, cacheEverything: true } });
+      const html = res.ok ? await withPreview(await res.text(), env, url.pathname.split('/')[2], url) : null;
+      const out = fresh(html === null ? res : new Response(html, res)); out.headers.set('x-robots-tag', 'noindex'); out.headers.set('referrer-policy', 'no-referrer'); out.headers.delete('content-length'); return out;
+    }
+    if (request.method === 'GET' && /^\/(forms\/|f\/[^/]+\.(js|css)$|tokens\.css$)/.test(url.pathname)) {
+      return fresh(await fetch(target ? target.toString() : request, { cf: { cacheTtl: 60, cacheEverything: true } }));
     }
     return target ? fetch(target.toString(), request) : fetch(request);
   },
