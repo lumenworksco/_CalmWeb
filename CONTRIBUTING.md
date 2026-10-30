@@ -1,4 +1,4 @@
-# Contributing to _CalmWeb
+# Contributing to CalmWeb
 
 Thanks for helping. This repo is the CalmCampus website and its evidence base, so accuracy matters more than volume. Small, focused changes are easiest to review. For the app itself, see the [CalmCampus](https://github.com/lumenworksco/CalmCampus) repo.
 

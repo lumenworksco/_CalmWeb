@@ -1,4 +1,4 @@
-# _CalmWeb
+# CalmWeb
 
 [![CI](https://github.com/lumenworksco/_CalmWeb/actions/workflows/ci.yml/badge.svg)](https://github.com/lumenworksco/_CalmWeb/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)

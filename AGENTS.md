@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Web side of CalmCampus (the iOS app lives in `lumenworksco/CalmCampus`): pitch site, impact report and the evidence dossier backing their claims. Live at cc.braunf.com.
+CalmWeb: the web side of CalmCampus (the iOS app lives in `lumenworksco/CalmCampus`): pitch site, impact report and the evidence dossier backing their claims. Live at cc.braunf.com.
 
 ## Layout
 
