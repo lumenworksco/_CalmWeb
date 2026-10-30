@@ -9,7 +9,7 @@ compatibility_date = "2026-10-01"
 # ]
 
 [triggers]
-crons = ["17 3 * * *"]   # daily retention purge
+crons = ["17 * * * *"]   # hourly: retention purge + re-shuffle of anonymous tables
 
 [observability]
 enabled = false          # no request logging: part of the anonymity promise

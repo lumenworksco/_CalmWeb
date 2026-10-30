@@ -5,7 +5,7 @@ insert into public.admins values ('00000000-0000-0000-0000-0000000000aa');
 
 -- Admin creates + publishes a form
 set role authenticated; set request.jwt.sub = '00000000-0000-0000-0000-0000000000aa';
-insert into public.forms (slug, title, draft, settings) values ('case-study', 'Case study', '{"pages":[{"id":"p1","blocks":[]}]}', '{"max_responses":2}');
+insert into public.forms (slug, title, draft, settings) values ('case-study', 'Case study', '{"pages":[{"id":"p1","blocks":[]}]}', '{"max_responses":2,"follow_up":{"enabled":true}}');
 select public.publish_form(id) from public.forms where slug = 'case-study';
 do $$ begin assert (select current_version from public.forms where slug='case-study') = 1, 'published v1'; end $$;
 
@@ -73,5 +73,27 @@ do $$ begin
   set role service_role;
   assert public.delete_identified('hash1'), 'delete by token';
   assert not public.delete_identified('hash1'), 'second delete is a no-op';
+end $$;
+-- Insertion order must not survive: after the reshuffle every anonymous row has the same xmin
+reset role;
+insert into public.forms (slug, title, settings) values ('order-test', 'Order', '{"follow_up":{"enabled":true}}');
+select public.publish_form(id) from public.forms where slug = 'order-test';
+set role service_role;
+select public.submit_response('order-test', '{"a":1}'); select public.submit_response('order-test', '{"a":2}'); select public.submit_response('order-test', '{"a":3}');
+select public.submit_follow_up('order-test', 'x@y.eu'); select public.submit_follow_up('order-test', 'z@y.eu');
+reset role;
+do $$ begin
+  assert (select count(distinct xmin::text) from public.responses) > 1, 'precondition: separate transactions have distinct xmin';
+end $$;
+set role service_role; select public.reshuffle_anonymous(); reset role;
+do $$ begin
+  assert (select count(distinct xmin::text) from public.responses) = 1, 'responses share one xmin after reshuffle';
+  assert (select count(distinct xmin::text) from public.follow_ups) = 1, 'follow_ups share one xmin after reshuffle';
+  assert (select count(*) from public.responses where form_id = (select id from public.forms where slug='order-test')) = 3, 'no rows lost';
+end $$;
+-- follow-ups are refused for forms that did not enable them, and for identified forms
+set role service_role;
+do $$ begin
+  assert not public.submit_follow_up('pilot-intake', 'a@b.eu'), 'identified forms take no follow-ups';
 end $$;
 \echo ALL SQL TESTS PASSED

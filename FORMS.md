@@ -35,9 +35,10 @@ A custom form builder and public form pages in the CalmCampus design system, run
 - Drop-off uses plain per-page counters (`page_reach`) with no id.
 - A waitlist or follow-up email on an anonymous form is a **separate request into a separate table** (`follow_ups`), week-rounded, with no id shared with any answer. The form says so.
 - Answers on the device while filling in are `localStorage` only, cleared on send. "Remember it was answered" is a flag on the device and is not enforced by the server; that is the price of anonymity.
+- Insertion order is a side channel (Postgres keeps physical row order and a per-transaction `xmin`), so an hourly job (`reshuffle_anonymous`) rewrites the anonymous tables in random order inside one transaction. The test asserts every row then shares one `xmin`. What remains: someone watching the database live between two runs, and a backup taken between runs. Supabase's own API logs time-stamp calls but, because respondents go through the Worker, they hold no respondent IP.
 - The admin never shows a breakdown or filter result of fewer than 5 responses (`MIN_GROUP` in `core.js`).
 
-**Identified.** For forms where you must know who answered. It collects only the fields the form asks for, with a consent checkbox, a per-form retention period (a daily job deletes expired rows) and a deletion code the respondent can use at `cc.braunf.com/f/`. Only a hash of the code is stored.
+**Identified.** For forms where you must know who answered. It collects only the fields the form asks for, with a consent checkbox, a per-form retention period (the hourly job deletes expired rows) and a deletion code the respondent can use at `cc.braunf.com/f/`. Only a hash of the code is stored.
 
 **Spam without CAPTCHA.** A signed, expiring challenge from the Worker, a small proof-of-work solved in the browser (`docs/forms/pow.js`), a minimum fill time, a honeypot field, and optional Cloudflare rate limiting. Nothing identifying is stored with the answer. The replay guard is in-memory per Worker instance: it is best effort, which is fine for spam, and not a security boundary.
 

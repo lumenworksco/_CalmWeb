@@ -6,7 +6,7 @@
 import { checkAnswer, isQuestion, isScale, scaleOf, visiblePages, isShown, pipe, TYPES } from './core.js';
 import { solve } from './pow.js';
 
-export const CRISIS_DEFAULT = 'CalmCampus supports wellbeing and is not a medical service. If you need help right now, please contact your university’s student support or local emergency services. In Belgium you can call 112 in an emergency, Tele-Onthaal on 106 or the Zelfmoordlijn on 1813, any time.';
+export const CRISIS_DEFAULT = 'CalmCampus supports wellbeing and is not a medical service. If you need help right now, please contact your university’s student support or local emergency services. In Belgium: Tele-Onthaal on 106 (anonymous, 24/7), the Zelfmoordlijn on 1813 (24/7), or 112 in an emergency. In the Netherlands: 113 Zelfmoordpreventie (call 113 or 0800-0113), or 112 in an emergency.';
 export const CONTACT_DEFAULT = 'contact@calm.braunf.com';
 const FACES = [
   'M9 16 Q12 12.5 15 16', 'M9 15.5 Q12 13.5 15 15.5', 'M9 15 H15', 'M9 14 Q12 17 15 14', 'M8.5 13.5 Q12 19 15.5 13.5',
@@ -182,7 +182,7 @@ function widget(b, ctx) {
       return field(b, ctx, [h('p', { class: 'cc-help', text: 'Put the most important first.' }), ol, keep, live], { group: true });
     }
     case 'info_text': return h('div', { class: 'cc-info', 'data-id': b.id }, (b.text || b.label || '').split(/\n{2,}/).map((p) => h('p', { text: pipe(p, ctx.doc, answers) })));
-    case 'info_image': return ASSET.test(b.src || '') ? h('figure', { class: 'cc-img', 'data-id': b.id }, h('img', { src: b.src, alt: b.alt || '', loading: 'lazy' })) : h('span', { 'data-id': b.id });
+    case 'info_image': return ASSET.test(b.src || '') ? h('figure', { class: 'cc-img', 'data-id': b.id }, h('img', { src: ctx.assetBase + b.src, alt: b.alt || '', loading: 'lazy' })) : h('span', { 'data-id': b.id });
     case 'divider': return h('hr', { class: 'cc-divider', 'data-id': b.id });
     default: return h('span', { 'data-id': b.id });
   }
@@ -228,7 +228,7 @@ export function mountForm(root, form, opts = {}) {
   let resumed = Object.keys(answers).length > 0;
 
   const persist = () => store.set(key, JSON.stringify({ answers, idx }));
-  const ctx = { doc, answers, set(k, v) { if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) delete answers[k]; else answers[k] = v; persist(); syncVisibility(); } };
+  const ctx = { doc, answers, assetBase, set(k, v) { if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) delete answers[k]; else answers[k] = v; persist(); syncVisibility(); } };
 
   root.classList.add('cc-form');
   const live = h('div', { class: 'sr', 'aria-live': 'polite', 'aria-atomic': 'true' });

@@ -154,6 +154,7 @@ export default {
     return target ? fetch(target.toString(), request) : fetch(request);
   },
 
-  // Daily: delete identified responses past their retention date.
-  async scheduled(_event, env) { await rpc(env, 'purge_expired', {}); },
+  // Hourly: delete identified responses past their retention date, and re-shuffle the anonymous
+  // tables so insertion order (physical order, xmin) can't link a follow-up email to a response.
+  async scheduled(_event, env) { await rpc(env, 'purge_expired', {}); await rpc(env, 'reshuffle_anonymous', {}); },
 };

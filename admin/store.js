@@ -27,6 +27,14 @@ async function api(path, opts) {
   if (!r.ok) { const e = await r.json().catch(() => ({})); throw Object.assign(new Error(e.message || `Request failed (${r.status})`), { code: e.code, status: r.status }); }
   return r;
 }
+// PostgREST caps a response (Supabase default: 1000 rows). Page through so results and exports are never silently cut.
+async function allRows(path) {
+  const out = [];
+  for (let offset = 0; ; offset += 1000) {
+    const chunk = await rows(`${path}&limit=1000&offset=${offset}`);
+    out.push(...chunk); if (chunk.length < 1000) return out;
+  }
+}
 const rows = async (path, opts) => { const r = await api(path, opts); return r.status === 204 ? [] : r.json(); };
 
 export const auth = {
@@ -61,10 +69,10 @@ export const db = {
   async publish(id) { const r = await api('/rest/v1/rpc/publish_form', { method: 'POST', body: { p_form_id: id } }); return r.json(); },
   async version(id, v) { return (await rows(`/rest/v1/form_versions?form_id=eq.${id}&version=eq.${v}&select=*`))[0]; },
   versions: (id) => rows(`/rest/v1/form_versions?form_id=eq.${id}&select=version,doc,published_at&order=version.desc`),
-  responses: (id) => rows(`/rest/v1/responses?form_id=eq.${id}&select=id,version,week,answers`),
-  identified: (id) => rows(`/rest/v1/identified_responses?form_id=eq.${id}&select=id,version,submitted_on,answers,contact,retention_until`),
+  responses: (id) => allRows(`/rest/v1/responses?form_id=eq.${id}&select=id,version,week,answers&order=id.asc`),
+  identified: (id) => allRows(`/rest/v1/identified_responses?form_id=eq.${id}&select=id,version,submitted_on,answers,contact,retention_until&order=id.asc`),
   reach: (id) => rows(`/rest/v1/page_reach?form_id=eq.${id}&select=version,page_id,reached`),
-  followUps: (id) => rows(`/rest/v1/follow_ups?form_id=eq.${id}&select=id,week,contact`),
+  followUps: (id) => allRows(`/rest/v1/follow_ups?form_id=eq.${id}&select=id,week,contact&order=id.asc`),
   deleteResponses: (id) => rows(`/rest/v1/responses?form_id=eq.${id}`, { method: 'DELETE' }),
   deleteResponse: (id) => rows(`/rest/v1/responses?id=eq.${id}`, { method: 'DELETE' }),
   deleteIdentified: (id) => rows(`/rest/v1/identified_responses?id=eq.${id}`, { method: 'DELETE' }),

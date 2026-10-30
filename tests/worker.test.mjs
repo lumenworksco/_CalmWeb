@@ -101,3 +101,9 @@ test('routing: /f/<slug> serves the form shell, /f/app.js and /f/ pass through u
   await worker.fetch(new Request('https://cc.braunf.com/f/'), env);
   assert.match(seen.at(-1), /\/f\/$/);
 });
+
+test('scheduled job purges expired data and reshuffles anonymous tables', async () => {
+  const calls = mockSupabase({ purge_expired: 0, reshuffle_anonymous: null });
+  await worker.scheduled({}, env);
+  assert.deepEqual(calls.map((c) => c.fn), ['purge_expired', 'reshuffle_anonymous']);
+});

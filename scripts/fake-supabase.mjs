@@ -40,14 +40,15 @@ export function createFake() {
       let r = t.page_reach.find((x) => x.form_id === f.id && x.version === p_version && x.page_id === p_page_id);
       if (!r) t.page_reach.push(r = { form_id: f.id, version: p_version, page_id: p_page_id, reached: 0 }); r.reached++; return null;
     },
-    submit_follow_up: ({ p_slug, p_contact }) => { const f = formBySlug(p_slug); if (!f || f.status !== 'published') return false; t.follow_ups.push({ id: crypto.randomUUID(), form_id: f.id, week: monday(), contact: p_contact }); return true; },
+    reshuffle_anonymous: () => { for (const k of ['responses', 'follow_ups']) t[k].sort(() => Math.random() - 0.5); return null; },
+    submit_follow_up: ({ p_slug, p_contact }) => { const f = formBySlug(p_slug); const p = pub(p_slug); if (!f || !p || p.privacy_mode !== 'anonymous' || !p.settings.follow_up?.enabled) return false; t.follow_ups.push({ id: crypto.randomUUID(), form_id: f.id, week: monday(), contact: p_contact }); return true; },
     publish_form: ({ p_form_id }) => {
       const f = t.forms.find((x) => x.id === p_form_id); if (!f) throw new Error('no such form');
       f.current_version = (f.current_version || 0) + 1; f.status = 'published'; f.updated_at = now();
       t.form_versions.push({ form_id: f.id, version: f.current_version, privacy_mode: f.privacy_mode, doc: structuredClone(f.draft), settings: structuredClone(f.settings), published_at: now() }); return f.current_version;
     },
   };
-  const SERVICE_ONLY = new Set(['get_public_form', 'submit_response', 'submit_identified', 'delete_identified', 'purge_expired', 'track_page', 'submit_follow_up']);
+  const SERVICE_ONLY = new Set(['get_public_form', 'submit_response', 'submit_identified', 'delete_identified', 'purge_expired', 'reshuffle_anonymous', 'track_page', 'submit_follow_up']);
 
   function filterRows(rows, params) {
     for (const [k, v] of params) {
@@ -58,7 +59,8 @@ export function createFake() {
     }
     const order = params.get('order');
     if (order) { const [col, dir] = order.split('.'); rows = [...rows].sort((a, b) => (a[col] > b[col] ? 1 : a[col] < b[col] ? -1 : 0) * (dir === 'desc' ? -1 : 1)); }
-    return params.get('limit') ? rows.slice(0, +params.get('limit')) : rows;
+    const off = +(params.get('offset') || 0);
+    return params.get('limit') ? rows.slice(off, off + Math.min(+params.get('limit'), 1000)) : rows.slice(off, off + 1000); // the real API caps at 1000 rows too
   }
 
   return async function handle(request) {
