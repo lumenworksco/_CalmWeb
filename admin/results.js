@@ -70,7 +70,7 @@ export async function mountResults(root, form, id) {
 
     const kids = [
       h('div', { class: 'filters' }, vSel), 
-      h('div', { class: 'stats' }, stat(scope.length, 'responses'), stat(started || '–', 'started'), stat(finishedPct == null ? '–' : finishedPct + '%', 'finished'), !identified && stat(followUps.length, 'follow-up emails')),
+      h('div', { class: 'stats' }, stat(scope.length, scope.length === 1 ? 'response' : 'responses'), stat(started || '–', 'started'), stat(finishedPct == null ? '–' : finishedPct + '%', 'finished'), !identified && stat(followUps.length, followUps.length === 1 ? 'follow-up email' : 'follow-up emails')),
       scope.length === 0 && !filtering && h('p', { class: 'note' }, 'No responses yet. Share ', h('b', { text: `${config.publicOrigin}/f/${form.slug}` }), ' to start collecting. This page fills in as answers arrive.'),
       h('h2', { text: 'Where people drop off' }),
       h('div', { class: 'q-sum' }, doc.pages.map((p, i) => { const n = rv(p.id); const base = Math.max(rv(first), 1); return h('div', { class: 'bar-row' }, h('span', { text: `${i + 1}. ${p.title || 'Page ' + (i + 1)}` }), h('div', { class: 'track', 'aria-hidden': 'true' }, h('div', { class: 'fill', 'data-w': Math.min(100, Math.round((n / base) * 100)) })), h('span', { class: 'v', text: `${n}` })); }),
