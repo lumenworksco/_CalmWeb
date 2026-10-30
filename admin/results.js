@@ -1,6 +1,7 @@
 // Results: stats, drop-off, per-question summaries, filterable table, CSV/JSON export, deletion.
 // Groups smaller than MIN_GROUP are never shown in a breakdown or filter.
 import { db } from './store.js';
+import { config } from './config.js';
 import { h, toast, confirmBox, download, fmtDate } from './ui.js';
 import { summarize, toCsv, shuffled, isQuestion, hasOptions, MIN_GROUP, TYPES } from '/forms/core.js';
 
@@ -70,6 +71,7 @@ export async function mountResults(root, form, id) {
     const kids = [
       h('div', { class: 'filters' }, vSel), 
       h('div', { class: 'stats' }, stat(scope.length, 'responses'), stat(started || '–', 'started'), stat(finishedPct == null ? '–' : finishedPct + '%', 'finished'), !identified && stat(followUps.length, 'follow-up emails')),
+      scope.length === 0 && !filtering && h('p', { class: 'note' }, 'No responses yet. Share ', h('b', { text: `${config.publicOrigin}/f/${form.slug}` }), ' to start collecting. This page fills in as answers arrive.'),
       h('h2', { text: 'Where people drop off' }),
       h('div', { class: 'q-sum' }, doc.pages.map((p, i) => { const n = rv(p.id); const base = Math.max(rv(first), 1); return h('div', { class: 'bar-row' }, h('span', { text: `${i + 1}. ${p.title || 'Page ' + (i + 1)}` }), h('div', { class: 'track', 'aria-hidden': 'true' }, h('div', { class: 'fill', 'data-w': Math.min(100, Math.round((n / base) * 100)) })), h('span', { class: 'v', text: `${n}` })); }),
         h('div', { class: 'bar-row' }, h('span', { text: 'Sent' }), h('div', { class: 'track', 'aria-hidden': 'true' }, h('div', { class: 'fill', 'data-w': Math.min(100, Math.round((scope.length / Math.max(rv(first), 1)) * 100)) })), h('span', { class: 'v', text: String(scope.length) })),
