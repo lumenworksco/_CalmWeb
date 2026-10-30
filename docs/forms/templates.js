@@ -9,45 +9,33 @@ export const TEMPLATES = [
   {
     id: 'case-study',
     name: 'Student stress & support: demand case study',
-    blurb: 'How students handle stress today, what it costs them, and whether something like CalmCampus would help. Anonymous.',
+    blurb: 'Ten quick questions on how students feel, what they do, and whether a weekly check-in would help. Anonymous.',
     title: 'How do students handle stress?',
     privacy_mode: 'anonymous',
     settings: {
       view: 'pages', cover: 'sage', wellbeing: true,
-      intro: 'A few calm questions about how students deal with stress, and whether something like CalmCampus would help. It takes about four minutes. Every question is optional, so skip anything you’d rather not answer.',
+      intro: 'A few quick questions about how students deal with feeling run down, and whether a short weekly check-in would help. It takes about two minutes. Four questions are required; skip any of the others. We’re not medical professionals: if you’re struggling, please talk to a doctor or your student support service.',
       thanks: 'Thank you. Your answers help us build something that’s actually useful for students.',
       follow_up: { enabled: true, title: 'Want to hear what we find?', text: 'Leave your email if you’d like to hear about the results or the KU Leuven pilot. Optional.', button: 'Keep me posted' },
     },
     doc: { pages: [
-      { id: 'p-you', title: 'A little context', blocks: [
-        q('stage', 'single_choice', 'Where are you in your studies?', { options: opts('Bachelor, first year', 'Bachelor, second year or later', 'Master', 'PhD or postgraduate', 'Not studying right now'), other: true }),
-        q('country', 'single_choice', 'Which country do you study in?', { options: opts('Belgium', 'The Netherlands'), other: true }),
+      { id: 'p-you', title: 'About you', blocks: [
+        q('level', 'single_choice', 'What level are you studying at?', { required: true, options: opts('Bachelor', 'Master', 'PhD', 'Other') }),
+        q('year', 'single_choice', 'Which year are you in?', { options: opts('1st', '2nd', '3rd', '4th or later') }),
       ] },
-      { id: 'p-now', title: 'How things feel lately', blocks: [
-        q('week', 'week_scale', 'How’s your week been?'),
-        q('energy', 'mood_slider', 'How’s your energy right now?', { minLabel: 'Drained', maxLabel: 'Energised' }),
-        q('pileup', 'single_choice', 'How often do things pile up so much that it’s hard to keep up?', { options: opts('Never', 'Rarely', 'Sometimes', 'Often', 'Almost always') }),
-        q('heavy', 'multi_choice', 'What tends to make things feel heavy?', { help: 'Pick any that fit.', options: opts('Deadlines and exams', 'Workload', 'Money', 'Housing', 'Feeling lonely or disconnected', 'Sleep', 'Uncertainty about the future'), other: true }),
-        q('impact', 'single_choice', 'Over the past month, how much has stress got in the way of your studies?', { options: opts('Not at all', 'A little', 'Somewhat', 'A lot') }),
+      { id: 'p-now', title: 'How it feels', blocks: [
+        q('exhausted', 'single_choice', 'In the past semester, how often did you feel exhausted or overwhelmed by your studies?', { required: true, options: opts('Never', 'Sometimes', 'Often', 'Almost always') }),
+        q('cope', 'multi_choice', 'When that happens, what do you usually do?', { help: 'Pick any that fit.', options: opts('Nothing, I push through', 'Talk to friends or family', 'Contact student support', 'See a doctor'), other: true }),
+        q('support', 'single_choice', 'Do you know where to find wellbeing support at your university?', { options: opts('Yes', 'Not really', 'No') }),
       ] },
-      { id: 'p-today', title: 'What you do today', blocks: [
-        q('cope', 'multi_choice', 'When things get heavy, what helps you today?', { help: 'Pick any that fit.', options: opts('Talking to friends or family', 'Exercise or being outside', 'Sleep and rest', 'My study advisor or student services', 'A psychologist or counsellor', 'A wellbeing or meditation app', 'Nothing in particular'), other: true }),
-        q('apps', 'single_choice', 'Have you used a wellbeing app, for mindfulness, mood tracking or similar?', { options: opts('Never', 'I tried one and stopped', 'I use one now') }),
-        q('stopped', 'multi_choice', 'What made you stop?', { help: 'Pick any that fit.', options: opts('I forgot about it', 'It started to feel like a chore', 'I worried about my privacy', 'It cost too much', 'It didn’t really help'), other: true, show_if: { all: [{ q: 'apps', op: 'eq', value: 'o2' }] } }),
+      { id: 'p-idea', title: 'A weekly check-in', blocks: [
+        q('checkin', 'single_choice', 'Would you use a short weekly check-in (under a minute) that helps you notice when you’re running low?', { required: true, options: opts('Yes', 'Maybe', 'No') }),
+        q('stop', 'short_text', 'What would make you stop using something like this?', { maxLength: 300 }),
+        q('where', 'single_choice', 'Where would you prefer to have it?', { required: true, options: opts('Inside my existing student app', 'A separate app', 'By email', 'A simple web link') }),
+        q('privacy', 'scale', 'How important is it that your answers stay completely private?', { max: 5, minLabel: 'Not important', maxLabel: 'Essential' }),
       ] },
-      { id: 'p-idea', title: 'An idea', blocks: [
-        q('idea', 'info_text', '', { text: 'CalmCampus is an app we’re building for students. It’s a one-minute daily check-in on your phone that helps you notice early signs of overload and take one small step while it’s still easy.\n\nAll your data stays on your phone. It isn’t a medical tool: it supports, it doesn’t diagnose or replace student services or professional care.' }),
-        q('interest', 'scale', 'How interested would you be in trying something like this?', { min: 1, max: 5, minLabel: 'Not at all', maxLabel: 'Very' }),
-        q('price', 'single_choice', 'If it cost something, what would feel fair?', { options: opts('Only if it’s free', 'Up to €3 a month', '€3 to €6 a month', 'More than €6 a month', 'Only if my university offered it') }),
-      ] },
-      { id: 'p-trust', title: 'Trust', blocks: [
-        q('worry', 'multi_choice', 'What would worry you about an app like this?', { help: 'Pick any that fit.', options: opts('Where my data goes', 'Who could see it', 'Feeling watched or judged', 'Annoying notifications', 'It not being accurate or useful', 'It taking too much time', 'Nothing in particular'), other: true }),
-        q('where', 'single_choice', 'Where would you want your data to be kept?', { options: opts('On my phone only', 'On my phone, with the option to share with a counsellor', 'In the cloud is fine', 'I’m not sure') }),
-        q('who', 'single_choice', 'Who would you trust most to offer it?', { options: opts('My university', 'A student-run project', 'A healthcare provider', 'An independent company', 'I’m not sure') }),
-      ] },
-      { id: 'p-matters', title: 'What matters most', blocks: [
-        q('features', 'ranking', 'Which of these would matter most to you?', { options: opts('A quick daily check-in', 'Seeing patterns over time', 'Small suggestions for what to do next', 'All my data staying on my phone', 'Links to student services and support lines', 'Reminders that fit my day') }),
-        q('more', 'long_text', 'Anything else you’d like us to know?', { help: 'Please don’t include names or details that could identify you or anyone else.', maxLength: 1500 }),
+      { id: 'p-more', title: 'One last thing', blocks: [
+        q('more', 'long_text', 'Anything else you’d like us to know?', { help: 'Optional. Please don’t include names or details that could identify you or anyone else.', maxLength: 1500 }),
       ] },
     ] },
   },
