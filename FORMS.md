@@ -11,7 +11,7 @@ A custom form builder and public form pages in the CalmCampus design system, run
                                               ▼
                                          Supabase Postgres (EU region), RLS on every table
 
- admin     ──► ccadmin.braunf.com       static admin app (Cloudflare Pages), email + password sign-in
+ admin     ──► ccadmin.braunf.com       static admin site (Cloudflare), email + password sign-in
             ──► Supabase directly         RLS lets only users in `admins` read or write anything
 ```
 
@@ -78,8 +78,19 @@ None of this is automated, because it creates accounts and changes DNS. Do these
    - URL Configuration: set the Site URL to your admin address (needed only for the emailed-link fallback).
    - Create your admin user (Authentication → Users → Add user), then in the SQL editor: `insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';`
 2. **Admin config.** Put the project URL and the **anon** key in `admin/config.js` (both are public by design; RLS protects the data). Never put the service key anywhere in the repo.
-3. **Worker.** In `worker/`: `npx wrangler secret put SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `CHALLENGE_SECRET` (a long random string), uncomment `routes` in `wrangler.toml`, then `npx wrangler deploy`. This needs braunf.com on Cloudflare with the `cc` record proxied. *(DNS change: yours to make.)*
+3. **Worker.** In `worker/`: `npx wrangler secret put SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `CHALLENGE_SECRET` (a long random string), then `npx wrangler deploy` (the routes for `/api/*`, `/f/*`, `/forms/*` and `/tokens.css` are already in `wrangler.toml`; they take effect once the `cc` DNS record is proxied). This needs braunf.com on Cloudflare with the `cc` record proxied. *(DNS change: yours to make.)*
 4. **Admin hosting.** `bash scripts/deploy-admin.sh` assembles the admin and deploys it as a small static Cloudflare site (`calmweb-admin`, config in `admin/wrangler.toml`), at its own address on workers.dev. The admin runs at `https://ccadmin.braunf.com` (added in the Cloudflare dashboard: the site → Domains → Add Domain). Names go one level under braunf.com because the free certificate covers `*.braunf.com` but not deeper names. *(DNS change: yours to make.)* Optionally put Cloudflare Access in front as a second lock. Re-run the script after changing anything under `admin/` or the shared form files.
 5. **Create the first form.** Sign in at ccadmin.braunf.com, New form, “Student stress & support: demand case study”, review the words, Settings → check the privacy notice, Publish. The link is `https://cc.braunf.com/f/case-study`.
 
 GitHub Pages settings and the `CNAME` file are untouched by all of this.
+
+## Running it
+
+- **Where things live.** Supabase project in Frankfurt (data). Cloudflare Worker `calmweb-forms` on `cc.braunf.com/api/*`, `/f/*`, `/forms/*`, `/tokens.css`. Cloudflare static site `calmweb-admin` at `ccadmin.braunf.com`. The public form files come from GitHub Pages (`main`, `/docs`).
+- **Shipping a change.** Public form files: merge to `main` (GitHub Pages publishes). Admin or shared form files: `bash scripts/deploy-admin.sh`. Worker: `cd worker && npx wrangler deploy`. Database changes: add a new migration file, never edit one that has already run.
+- **Settings only apply when you publish.** The response limit, the dates and the privacy-notice wording are part of a form's published version.
+- **Dates.** Leave Opens and Closes empty unless you mean them; the admin refuses to publish a closing time in the past.
+- **Cloudflare cache.** Set the zone's Browser Cache TTL to “Respect Existing Headers”, otherwise browsers may keep the form's files for 4 hours after an update.
+- **Keys.** The Supabase secret key lives only in the Worker's secrets. To rotate it, create a new key in Supabase, `npx wrangler secret put SUPABASE_SERVICE_KEY`, then delete the old one.
+- **Backups.** Download the CSV from Results every few days. The free Supabase plan pauses a project after a week without activity; unpause it in the dashboard if that happens.
+- **Not built yet.** Matrix questions, notifications, linking forms to pilots, a retention period for follow-up emails.
