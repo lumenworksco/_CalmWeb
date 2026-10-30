@@ -102,7 +102,7 @@ export async function mountEditor(app, id, tab, { shell }) {
     const el = h(area ? 'textarea' : 'input', { type: area ? false : 'text', id: uid(), value: area ? false : (obj[key] ?? ''), placeholder: ph, maxlength: max, onInput: (e) => { const v = e.target.value; if (v === '') delete obj[key]; else obj[key] = v; touch(); onInput && onInput(); } });
     if (area) el.value = obj[key] ?? ''; return el;
   };
-  const check = (lbl, checked, fn, hint) => { const i = h('input', { type: 'checkbox', id: uid(), checked, onChange: (e) => fn(e.target.checked) }); return h('div', { class: 'check' }, i, h('label', { for: i.id }, lbl, hint && h('span', { class: 'hint', style: false }, ' ', hint))); };
+  const check = (lbl, checked, fn, hint) => { const i = h('input', { type: 'checkbox', id: uid(), checked, onChange: (e) => fn(e.target.checked) }); return h('div', { class: 'check' }, i, h('label', { for: i.id }, lbl, hint && h('span', { class: 'hint', text: hint }))); };
 
   function drawInspector() {
     if (sel.kind === 'page') {
@@ -126,7 +126,7 @@ export async function mountEditor(app, id, tab, { shell }) {
       parts.push(fld('Image', sel2, 'Only images from the CalmCampus asset library, so forms stay on-brand.'), fld('Description (alt text)', text(b, 'alt'), 'For screen readers.'));
     } else if (q) {
       parts.push(fld('Question', text(b, 'label', { area: true, onInput: () => { outline.querySelector(`[data-blk="${b.id}"] .t`).textContent = label(b); } })), fld('Help text (optional)', text(b, 'help', { area: true })));
-      parts.push(check('Required', !!b.required, (v) => { b.required = v; touch(); }, '— everything else stays skippable'));
+      parts.push(check('Required', !!b.required, (v) => { b.required = v; touch(); }, 'Everything else stays skippable.'));
     }
     if (hasOptions(b)) {
       const list = h('div');
@@ -164,7 +164,7 @@ export async function mountEditor(app, id, tab, { shell }) {
     const draw = () => {
       const mode = b.show_if?.any ? 'any' : 'all', conds = b.show_if ? (b.show_if.any || b.show_if.all) : [];
       const prev = earlier();
-      wrap.replaceChildren(h('span', { class: 'lbl', text: 'Show only if…' }),
+      wrap.replaceChildren(...[h('span', { class: 'lbl', text: 'Show only if…' }),
         !conds.length && h('p', { class: 'hint', text: prev.length ? 'Always shown. Add a condition to show this only for some answers.' : 'Always shown. (Conditions can use any question that comes before this one.)' }),
         conds.length > 1 && (() => { const s = h('select', { 'aria-label': 'Match', onChange: (e) => { const list = b.show_if.all || b.show_if.any; b.show_if = { [e.target.value]: list }; touch(); } }, h('option', { value: 'all', text: 'All of these are true' }), h('option', { value: 'any', text: 'Any of these is true' })); s.value = mode; return s; })(),
         ...conds.map((c, i) => {
@@ -179,7 +179,7 @@ export async function mountEditor(app, id, tab, { shell }) {
           }
           return h('div', { class: 'cond-row' }, qs, ops, val, h('button', { class: 'iconbtn', 'aria-label': 'Remove condition', onClick: () => { const k = b.show_if.all ? 'all' : 'any'; b.show_if[k].splice(i, 1); if (!b.show_if[k].length) delete b.show_if; touch(); draw(); drawOutline(); }, text: '×' }));
         }),
-        prev.length > 0 && h('button', { class: 'btn ghost sm', onClick: () => { const c = { q: prev[prev.length - 1].id, op: 'eq' }; if (b.show_if) (b.show_if.all || b.show_if.any).push(c); else b.show_if = { all: [c] }; touch(); draw(); drawOutline(); }, text: '+ Add condition' }));
+        prev.length > 0 && h('button', { class: 'btn ghost sm', onClick: () => { const c = { q: prev[prev.length - 1].id, op: 'eq' }; if (b.show_if) (b.show_if.all || b.show_if.any).push(c); else b.show_if = { all: [c] }; touch(); draw(); drawOutline(); }, text: '+ Add condition' })].filter(Boolean));
     };
     draw(); drawLogicSoon = draw; return wrap;
   }
@@ -216,7 +216,7 @@ export async function mountEditor(app, id, tab, { shell }) {
       const v = e.target.value.toLowerCase(); e.target.value = v; const ok = validSlug(v); slugHint.textContent = ok ? `${config.publicOrigin}/f/${v}` : 'Use 3–60 lowercase letters, numbers and single hyphens.'; slugHint.className = 'hint' + (ok ? '' : ' msg err');
       if (ok) { form.slug = v; touch({ noPreview: true }); } } });
     const slugHint = h('p', { class: 'hint', text: `${config.publicOrigin}/f/${form.slug}` });
-    const mode = (v, t, d) => { const i = h('input', { type: 'radio', name: 'pm', id: 'pm-' + v, checked: form.privacy_mode === v, onChange: () => { form.privacy_mode = v; touch(); render(); } }); return h('div', { class: 'check' }, i, h('label', { for: i.id }, h('b', { text: t }), h('span', { class: 'hint', text: ' ' + d }))); };
+    const mode = (v, t, d) => { const i = h('input', { type: 'radio', name: 'pm', id: 'pm-' + v, checked: form.privacy_mode === v, onChange: () => { form.privacy_mode = v; touch(); render(); } }); return h('div', { class: 'check' }, i, h('label', { for: i.id }, h('b', { text: t }), h('span', { class: 'hint', text: d }))); };
 
     return h('div', { class: 'settings' },
       h('h2', { text: 'Basics' }),

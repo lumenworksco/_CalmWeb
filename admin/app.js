@@ -33,7 +33,7 @@ function login() {
         if (!em.value.trim()) { say('Enter your email first.', true); return; }
         try { await auth.sendLink(em.value.trim()); say('Check your email and open the link on this device.'); } catch (err) { say(err.message, true); }
       } })));
-  app.replaceChildren(h('main', { class: 'login' }, h('img', { src: LOGO, alt: 'CalmCampus', height: 34 }), h('h1', { text: 'Forms' }),
+  app.replaceChildren(h('main', { class: 'login' }, h('picture', {}, h('source', { media: '(prefers-color-scheme: dark)', srcset: '/assets/brand/first-sprout-horizontal-reversed.svg' }), h('img', { src: LOGO, alt: 'CalmCampus', height: 34 })), h('h1', { text: 'Forms' }),
     h('p', { class: 'sub', text: 'Private. Only invited people can sign in.' }), form, msg));
   em.focus();
 }
