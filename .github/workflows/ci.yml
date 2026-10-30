@@ -10,18 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Check local links and assets in the site
-        run: |
-          python3 - <<'PY'
-          import re, pathlib, sys
-          root = pathlib.Path("docs")
-          bad = []
-          for page in root.glob("*.html"):
-              for ref in re.findall(r'(?:href|src)="([^"#?]+)"', page.read_text()):
-                  if re.match(r'(https?:|mailto:|data:)', ref):
-                      continue
-                  if not (root / ref).exists():
-                      bad.append(f"{page}: {ref}")
-          print("\n".join(bad) or "ok")
-          sys.exit(1 if bad else 0)
-          PY
+      - name: Links resolve and nothing loads from third parties
+        run: python3 scripts/check-site.py
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Core logic, proof-of-work and Worker tests
+        run: node --test tests/*.test.mjs
+      - name: Admin bundle assembles
+        run: bash scripts/assemble-admin.sh
+
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Migration, row-level security and anonymity tests
+        run: bash supabase/tests/run.sh

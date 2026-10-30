@@ -146,7 +146,7 @@ export default {
     }
     // /f/<slug> serves the static form shell; everything else passes through to the site.
     const target = env.ORIGIN ? new URL(url.pathname + url.search, env.ORIGIN) : null;
-    if (url.pathname.startsWith('/f/') && url.pathname !== '/f/') {
+    if (/^\/f\/[a-z0-9]+(-[a-z0-9]+)*\/?$/.test(url.pathname)) {
       const shell = target ? new URL('/f/index.html', target) : new URL('/f/index.html', url);
       const res = await fetch(shell.toString());
       return new Response(res.body, { status: res.status, headers: { ...Object.fromEntries(res.headers), 'x-robots-tag': 'noindex', 'referrer-policy': 'no-referrer' } });

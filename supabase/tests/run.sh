@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Runs the migration + tests on a throwaway local Postgres cluster. Needs initdb/pg_ctl/psql on PATH.
+# Runs the migration + tests on a throwaway local Postgres cluster.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+for d in /usr/lib/postgresql/*/bin /opt/homebrew/opt/postgresql*/bin /usr/local/opt/postgresql*/bin; do [ -x "$d/initdb" ] && PATH="$d:$PATH"; done
+command -v initdb >/dev/null || { echo "initdb not found: install PostgreSQL 14+"; exit 1; }
 D=$(mktemp -d); trap 'pg_ctl -D "$D/data" -m immediate stop >/dev/null 2>&1 || true; rm -rf "$D"' EXIT
 PORT=${PGTESTPORT:-54329}
 initdb -D "$D/data" -A trust -U postgres >/dev/null

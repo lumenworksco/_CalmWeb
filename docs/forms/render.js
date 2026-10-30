@@ -312,6 +312,7 @@ export function mountForm(root, form, opts = {}) {
     current = { screen, nodes };
     const last = idx === screens.length - 1 && !identified;
     const node = h('section', { class: 'cc-screen', 'aria-label': screen.title || `Step ${idx + 1}` },
+      h('h1', { class: 'sr', text: form.title }),
       screen.title && view !== 'steps' && h('h2', { text: pipe(screen.title, doc, answers) }), body,
       h('div', { class: 'cc-nav' },
         idx > 0 && h('button', { type: 'button', class: 'cc-btn ghost', onClick: back, text: 'Back' }),
@@ -358,7 +359,7 @@ export function mountForm(root, form, opts = {}) {
     const mail = h('input', { type: 'email', id: 'c-mail', autocomplete: 'email', value: contact.email, onInput: (e) => { contact.email = e.target.value; } });
     const cb = h('input', { type: 'checkbox', id: 'c-consent', checked: consent, onChange: (e) => { consent = e.target.checked; } });
     const node = h('section', { class: 'cc-screen', 'aria-label': 'Your details' },
-      h('h2', { text: 'Your details' }),
+      h('h1', { class: 'sr', text: form.title }), h('h2', { text: 'Your details' }),
       h('p', { class: 'cc-lead', text: 'Only what we need to get back to you.' }),
       h('div', { class: 'cc-q' }, h('label', { class: 'cc-label', for: 'c-name' }, 'Name', h('span', { class: 'opt', text: 'optional' })), name),
       h('div', { class: 'cc-q' }, h('label', { class: 'cc-label', for: 'c-mail', text: 'Email' }), mail),

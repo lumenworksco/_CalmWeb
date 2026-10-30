@@ -89,3 +89,15 @@ test('identified form needs consent and returns a delete token (only its hash is
   const stored = calls.find((c) => c.fn === 'submit_identified').args;
   assert.ok(deleteToken.length > 20 && stored.p_token_hash && stored.p_token_hash !== deleteToken);
 });
+
+test('routing: /f/<slug> serves the form shell, /f/app.js and /f/ pass through untouched', async () => {
+  const seen = [];
+  globalThis.fetch = async (u) => { const url = String(u.url || u); seen.push(url); return new Response('<html>shell</html>', { status: 200, headers: { 'content-type': 'text/html' } }); };
+  const shell = await worker.fetch(new Request('https://cc.braunf.com/f/my-form'), env);
+  assert.match(seen.at(-1), /\/f\/index\.html$/);
+  assert.equal(shell.headers.get('x-robots-tag'), 'noindex');
+  await worker.fetch(new Request('https://cc.braunf.com/f/app.js'), env);
+  assert.match(seen.at(-1), /\/f\/app\.js$/);
+  await worker.fetch(new Request('https://cc.braunf.com/f/'), env);
+  assert.match(seen.at(-1), /\/f\/$/);
+});
