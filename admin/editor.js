@@ -210,7 +210,14 @@ export async function mountEditor(app, id, tab, { shell }) {
   function settingsView() {
     const s = form.settings, anon = form.privacy_mode !== 'identified';
     const sel1 = (key, opts, def) => { const e = h('select', { id: uid(), onChange: (ev) => { ev.target.value ? s[key] = ev.target.value : delete s[key]; touch(); } }, opts.map(([v, t]) => h('option', { value: v, text: t }))); e.value = s[key] ?? def; return e; };
-    const dt = (key) => { const e = h('input', { type: 'datetime-local', id: uid(), value: s[key] ? new Date(s[key]).toISOString().slice(0, 16) : '', onChange: (ev) => { ev.target.value ? s[key] = new Date(ev.target.value).toISOString() : delete s[key]; touch(); } }); return e; };
+    // datetime-local works in local time; storage is ISO (UTC). Safari-family browsers also fill the box with
+    // "now" as soon as it is focused, so every date has a Clear button.
+    const pad = (n) => String(n).padStart(2, '0');
+    const localInput = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+    const dt = (key) => {
+      const input = h('input', { type: 'datetime-local', id: key, value: s[key] ? localInput(s[key]) : '', onChange: (ev) => { ev.target.value ? s[key] = new Date(ev.target.value).toISOString() : delete s[key]; touch(); } });
+      return h('div', { class: 'row' }, input, h('button', { type: 'button', class: 'btn ghost sm', text: 'Clear', onClick: () => { delete s[key]; input.value = ''; touch(); } }));
+    };
     const num = (key, ph) => h('input', { type: 'number', id: uid(), min: 1, placeholder: ph, value: s[key] ?? '', onInput: (e) => { e.target.value ? s[key] = +e.target.value : delete s[key]; touch(); } });
     const slugIn = h('input', { type: 'text', id: 'slug', value: form.slug, maxlength: 60, onInput: (e) => {
       const v = e.target.value.toLowerCase(); e.target.value = v; const ok = validSlug(v); slugHint.textContent = ok ? `${config.publicOrigin}/f/${v}` : 'Use 3–60 lowercase letters, numbers and single hyphens.'; slugHint.className = 'hint' + (ok ? '' : ' msg err');
@@ -238,7 +245,7 @@ export async function mountEditor(app, id, tab, { shell }) {
       fld('Custom crisis wording (optional)', text(s, 'crisis', { area: true }), 'Leave empty to use the standard CalmCampus wording.'),
       h('h2', { text: 'Privacy notice' }),
       h('p', { class: 'hint', text: 'Shown before the first question. The summary line and the table below are generated from your settings, so it can’t drift from what the form really does.' }),
-      fld('Who sees the answers', text(s, 'who', { area: true, ph: 'The CalmCampus team (students at UCLL, Belgium)…' })),
+      fld('Who sees the answers', text(s, 'who', { area: true, ph: 'The CalmCampus team…' })),
       anon ? fld('How long it’s kept', text(s, 'retention_text', { area: true, ph: 'Until this study ends…' }))
            : h('div', {}, fld('Retention (days)', num('retention_days', '90'), 'Identified answers are deleted automatically after this.'), fld('Purpose', text(s, 'purpose', { area: true })), fld('Consent wording', text(s, 'consent', { area: true }), 'The checkbox respondents tick. Leave empty for the default.')),
       fld('Contact address in the notice', text(s, 'contact_email', { ph: 'contact@calm.braunf.com' })),
@@ -247,7 +254,7 @@ export async function mountEditor(app, id, tab, { shell }) {
         check('Offer an optional email box after the form', !!s.follow_up?.enabled, (v) => { s.follow_up = { ...(s.follow_up || {}), enabled: v }; touch(); render(); }, 'Stored separately from the answers, with no link between them. The form says so.'),
         s.follow_up?.enabled && h('div', {}, fld('Heading', text(s.follow_up, 'title')), fld('Text', text(s.follow_up, 'text', { area: true })), fld('Button', text(s.follow_up, 'button')))),
       h('h2', { text: 'Access' }),
-      h('div', { class: 'row' }, fld('Opens', dt('opens_at')), fld('Closes', dt('closes_at'))),
+      h('div', { class: 'row' }, fld('Opens (optional)', dt('opens_at'), 'Leave empty to open as soon as you publish.', 'opens_at'), fld('Closes (optional)', dt('closes_at'), 'Leave empty to stay open until you close it or the limit is reached.', 'closes_at')),
       fld('Response limit', num('max_responses', 'No limit'), 'The form closes by itself when this many answers are in.'),
       check('Remember on the device that it was answered', !!s.one_per_device, (v) => { v ? s.one_per_device = true : delete s.one_per_device; touch(); }, 'A note on the respondent’s own device only. It can be cleared, and nothing identifying is sent to us, so anonymity is intact.'),
       h('p', { class: 'hint', text: 'Settings go live when you publish.' }));
@@ -283,6 +290,9 @@ export async function mountEditor(app, id, tab, { shell }) {
     const problems = validateDoc(form.draft);
     if (form.privacy_mode === 'identified' && !form.settings.retention_days) form.settings.retention_days = 90;
     if (form.settings.redirect && !/^https:\/\//.test(form.settings.redirect)) problems.push('The redirect must start with https://');
+    const st = form.settings;
+    if (st.closes_at && new Date(st.closes_at) <= new Date()) problems.push('The closing time has already passed, so the form would be closed straight away. Clear it in Settings → Access, or pick a later time.');
+    if (st.opens_at && st.closes_at && new Date(st.closes_at) <= new Date(st.opens_at)) problems.push('The closing time must be after the opening time.');
     if (!validSlug(form.slug)) problems.push('The link name is not valid.');
     if (problems.length) { await modal('Fix these first', h('ul', { class: 'problems' }, problems.map((p) => h('li', { text: p }))), [{ label: 'OK', value: true }]); return; }
     if (!form.current_version) {

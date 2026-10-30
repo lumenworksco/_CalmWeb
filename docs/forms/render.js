@@ -37,7 +37,7 @@ export function noticeFor(form) {
     ['What we collect', 'Your answers, and the week you sent them (not the date or time). Nothing else.'],
     ['What we don’t', 'No name, email, IP address, device details, cookies or account. Your answers are not linked to anything that identifies you, so we can’t tell who sent them.'],
     ['Where it goes', 'The CalmCampus app keeps your data on your phone. A survey is different: to read the results, your answers are sent to and stored on a server in the EU. The network provider that delivers your request can see your IP address while it does, but we don’t keep it.'],
-    ['Who sees it', s.who || 'The CalmCampus team (students at UCLL, Belgium). We only look at results in summary, and we show no group smaller than 5 people.'],
+    ['Who sees it', s.who || 'The CalmCampus team. We only look at results in summary, and we show no group smaller than 5 people.'],
     ['How long', s.retention_text || 'Until this study ends. Because we can’t tell which answers are yours, we can’t delete them once sent. You can stop at any point before sending and nothing is submitted.'],
     ['On your device', 'While you fill this in, your answers are saved on this device only so you can pick up later. They’re cleared when you send.'],
   ] : [
