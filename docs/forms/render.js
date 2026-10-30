@@ -55,7 +55,7 @@ export function noticeFor(form) {
   };
 }
 
-function notice(form) {
+export function notice(form) {
   const n = noticeFor(form);
   return h('section', { class: 'cc-notice', 'aria-labelledby': 'cc-promise' },
     h('strong', { class: 'cc-promise', id: 'cc-promise', text: n.promise }),
@@ -451,8 +451,12 @@ export function mountForm(root, form, opts = {}) {
     return box;
   }
 
-  // Back button / refresh: nothing to do; state is in answers + idx.
-  renderIntro();
+  // Admin preview can start anywhere: 'intro', 'done', or a block id.
+  if (opts.startAt === 'done') done({ preview: true });
+  else if (opts.startAt && opts.startAt !== 'intro') {
+    const i = activeScreens().findIndex((x) => x.blocks.some((b) => b.id === opts.startAt));
+    idx = Math.max(0, i); renderScreen();
+  } else renderIntro();
   return { destroy() { root.replaceChildren(); } };
 }
 

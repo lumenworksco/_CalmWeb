@@ -82,3 +82,8 @@ test('pow: sha256 matches Node, solve/check agree', async () => {
   assert.ok(await check('tok.en', c, 12));
   assert.ok(!(await check('tok.en', -1, 12)));
 });
+
+test('unanswered questions summarise as empty, not NaN', () => {
+  const s = summarize(doc(), [{ a: 'y' }, { a: 'y' }, { a: 'n' }, { a: 'n' }, { a: 'y' }]);
+  assert.equal(s.find((x) => x.id === 'e').empty, true);
+});

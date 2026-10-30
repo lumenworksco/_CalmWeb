@@ -207,7 +207,8 @@ export function summarize(doc, rows) {
   for (const b of doc.pages.flatMap((p) => p.blocks).filter(isQuestion)) {
     const vals = rows.map((r) => r[b.id]).filter(answered);
     const s = { id: b.id, type: b.type, label: b.label, n: vals.length, skipped: rows.length - vals.length };
-    if (vals.length < MIN_GROUP && vals.length > 0) { s.suppressed = true; out.push(s); continue; }
+    if (vals.length === 0) { s.empty = true; out.push(s); continue; }
+    if (vals.length < MIN_GROUP) { s.suppressed = true; out.push(s); continue; }
     if (hasOptions(b) && b.type !== 'ranking') {
       const counts = Object.fromEntries([...b.options.map((o) => o.id), ...(b.other ? ['other'] : [])].map((k) => [k, 0]));
       for (const v of vals) for (const x of Array.isArray(v) ? v : [v]) if (x in counts) counts[x]++;
@@ -244,13 +245,13 @@ const csvCell = (v) => {
 };
 
 // Human-readable CSV: option ids become labels. `rows` are { week?, answers }.
-export function toCsv(doc, rows) {
+export function toCsv(doc, rows, extraHeads = []) {
   const qs = doc.pages.flatMap((p) => p.blocks).filter(isQuestion);
   const label = (b, x) => (x === 'other' ? 'Other' : (b.options || []).find((o) => o.id === x)?.label ?? x);
-  const head = ['week', ...qs.flatMap((b) => (b.other ? [b.label, `${b.label} (other)`] : [b.label]))];
+  const head = ['week', ...extraHeads, ...qs.flatMap((b) => (b.other ? [b.label, `${b.label} (other)`] : [b.label]))];
   const lines = [head.map(csvCell).join(',')];
   for (const r of shuffled(rows)) {
-    const cells = [r.week ?? ''];
+    const cells = [r.week ?? '', ...(r.extra || [])];
     for (const b of qs) {
       const v = r.answers[b.id];
       cells.push(hasOptions(b) ? (Array.isArray(v) ? v.map((x) => label(b, x)) : v === undefined ? '' : label(b, v)) : v);

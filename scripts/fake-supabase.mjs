@@ -8,7 +8,7 @@ const now = () => new Date().toISOString();
 const json = (b, status = 200, headers = {}) => new Response(b === undefined ? null : JSON.stringify(b), { status, headers: { 'content-type': 'application/json', ...headers } });
 
 export function createFake() {
-  const t = { forms: [], form_versions: [], responses: [], page_reach: [], follow_ups: [], identified_responses: [] };
+  const t = { admins: [{ user_id: 'dev-admin' }], forms: [], form_versions: [], responses: [], page_reach: [], follow_ups: [], identified_responses: [] };
   const DEFAULTS = {
     forms: () => ({ id: crypto.randomUUID(), status: 'draft', privacy_mode: 'anonymous', draft: { pages: [] }, settings: {}, current_version: null, created_at: now(), updated_at: now() }),
     responses: () => ({ id: crypto.randomUUID() }),
