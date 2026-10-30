@@ -71,7 +71,7 @@ function field(b, ctx, body, { group = false, labelFor } = {}) {
   const text = () => pipe(b.label, doc, answers);
   const errId = `err-${b.id}`, helpId = `help-${b.id}`;
   const label = h(group ? 'legend' : 'label', { class: group ? '' : 'cc-label', for: group ? false : labelFor, id: `lbl-${b.id}` },
-    text(), !b.required && h('span', { class: 'opt', text: 'optional' }));
+    text(), !b.required && ' ', !b.required && h('span', { class: 'opt', text: 'optional' }));
   const wrap = h(group ? 'fieldset' : 'div', { class: 'cc-q', 'data-id': b.id, 'aria-describedby': [b.help && helpId, errId].filter(Boolean).join(' ') },
     label, b.help && h('p', { class: 'cc-help', id: helpId, text: pipe(b.help, doc, answers) }), body,
     h('div', { id: errId, role: 'alert' }));
