@@ -94,7 +94,7 @@ test('routing: /f/<slug> serves the form shell, /f/app.js and /f/ pass through u
   const seen = [];
   globalThis.fetch = async (u) => { const url = String(u.url || u); seen.push(url); return new Response('<html>shell</html>', { status: 200, headers: { 'content-type': 'text/html' } }); };
   const shell = await worker.fetch(new Request('https://cc.braunf.com/f/my-form'), env);
-  assert.match(seen.at(-1), /\/f\/index\.html$/);
+  assert.ok(seen.some((u) => /\/f\/index\.html$/.test(u)), 'serves the shell');
   assert.equal(shell.headers.get('x-robots-tag'), 'noindex');
   await worker.fetch(new Request('https://cc.braunf.com/f/app.js'), env);
   assert.match(seen.at(-1), /\/f\/app\.js$/);
@@ -106,4 +106,18 @@ test('scheduled job purges expired data and reshuffles anonymous tables', async 
   const calls = mockSupabase({ purge_expired: 0, reshuffle_anonymous: null });
   await worker.scheduled({}, env);
   assert.deepEqual(calls.map((c) => c.fn), ['purge_expired', 'reshuffle_anonymous']);
+});
+
+test('form shell carries the form title and intro for link previews, escaped', async () => {
+  globalThis.fetch = async (u, init) => {
+    const url = String(u.url || u);
+    if (url.includes('/rpc/get_public_form')) return new Response(JSON.stringify({ ...form, title: 'Stress <b>& co</b>', settings: { intro: 'A "calm" intro' } }), { status: 200 });
+    return new Response('<html><head><title>CalmCampus form</title></head><body></body></html>', { status: 200, headers: { 'content-type': 'text/html' } });
+  };
+  const res = await worker.fetch(new Request('https://cc.braunf.com/f/demo'), env);
+  const html = await res.text();
+  assert.match(html, /<title>Stress &lt;b&gt;&amp; co&lt;\/b&gt; · CalmCampus<\/title>/);
+  assert.match(html, /og:description" content="A &quot;calm&quot; intro"/);
+  assert.match(html, /og:image" content="https:\/\/cc\.braunf\.com\/assets\/og-image\.png"/);
+  assert.equal(res.headers.get('cache-control'), 'no-cache');
 });

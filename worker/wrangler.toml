@@ -6,6 +6,8 @@ compatibility_date = "2026-10-01"
 routes = [
   { pattern = "cc.braunf.com/api/*", zone_name = "braunf.com" },
   { pattern = "cc.braunf.com/f/*",   zone_name = "braunf.com" },
+  { pattern = "cc.braunf.com/forms/*", zone_name = "braunf.com" },
+  { pattern = "cc.braunf.com/tokens.css", zone_name = "braunf.com" },
 ]
 
 [triggers]
