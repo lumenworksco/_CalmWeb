@@ -82,8 +82,8 @@ Corrections to a claim or source are especially welcome, see [CONTRIBUTING.md](C
 
 ## Team
 
-- **Florian Braun**: Engineering Technology, UCLL
-- **Helene David**: Economics and Business, UCLL
+- **Florian Braun**: Engineering Technology
+- **Helene David**: Economics and Business
 
 ## License
 
