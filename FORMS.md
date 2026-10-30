@@ -46,6 +46,8 @@ A custom form builder and public form pages in the CalmCampus design system, run
 
 Surveys differ from the app: the CalmCampus app keeps its data on the phone, but a form has to send answers to a server. The privacy notice on every form says so plainly.
 
+**Crisis wording** is Belgian by default (the same helplines as the app: Tele-Onthaal 106, Zelfmoordlijn 1813, 112). For a form aimed at another country, such as the Netherlands later, set “Custom crisis wording” in the form's Settings instead of changing the default.
+
 ## Data model
 
 - `forms`: slug, title, `status` (draft, published, closed, archived), `privacy_mode`, `draft` (the editable document), `settings`, `current_version`.
