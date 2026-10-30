@@ -232,9 +232,10 @@ export function mountForm(root, form, opts = {}) {
 
   root.classList.add('cc-form');
   const live = h('div', { class: 'sr', 'aria-live': 'polite', 'aria-atomic': 'true' });
-  const stage = h('div');
+  const stage = h('div', { class: 'cc-stage' });
   const progressBar = h('div');
-  const progressWrap = h('div', { hidden: true }, h('div', { class: 'cc-progress', role: 'progressbar', 'aria-label': 'Progress', 'aria-valuemin': 0, 'aria-valuemax': 100 }, progressBar), h('p', { class: 'cc-stepnote' }));
+  const outline = h('ol', { class: 'cc-outline', 'aria-label': 'Sections' });
+  const progressWrap = h('div', { hidden: true, class: 'cc-side' }, h('div', { class: 'cc-progress', role: 'progressbar', 'aria-label': 'Progress', 'aria-valuemin': 0, 'aria-valuemax': 100 }, progressBar), h('p', { class: 'cc-stepnote' }), outline);
   if (s.cover === 'sage' || s.cover === 'terracotta') root.append(h('div', { class: 'cc-cover', 'data-cover': s.cover, 'aria-hidden': 'true' }, h('i'), h('i')));
   root.append(h('div', { class: 'cc-top' }, h('picture', {}, h('source', { media: '(prefers-color-scheme: dark)', srcset: assetBase + 'assets/brand/first-sprout-horizontal-reversed.svg' }),
     h('img', { src: assetBase + 'assets/brand/first-sprout-horizontal-color.svg', alt: 'CalmCampus', width: 222, height: 34 }))), progressWrap, stage, live);
@@ -263,10 +264,18 @@ export function mountForm(root, form, opts = {}) {
     const pct = Math.round((i / Math.max(n, 1)) * 100);
     progressBar.style.width = pct + '%';
     progressWrap.firstChild.setAttribute('aria-valuenow', pct);
-    progressWrap.lastChild.textContent = `Step ${Math.min(i + 1, n)} of ${n}`;
+    progressWrap.children[1].textContent = `Step ${Math.min(i + 1, n)} of ${n}`;
+    // sections list, shown in the side rail on wide screens
+    const sc = activeScreens(), parts = [];
+    for (const x of sc) if (!parts.some((y) => y.pageId === x.pageId)) parts.push(x);
+    const atContact = identified && i >= sc.length, curPage = sc[i]?.pageId;
+    const items = parts.map((x, k) => h('li', { 'aria-current': !atContact && x.pageId === curPage ? 'step' : false, text: x.title || `Part ${k + 1}` }));
+    if (identified) items.push(h('li', { 'aria-current': atContact ? 'step' : false, text: 'Your details' }));
+    outline.replaceChildren(...items);
   }
 
   function show(node, announce) {
+    root.dataset.mode = node.dataset.mode || 'flow';
     stage.replaceChildren(node);
     node.setAttribute('tabindex', '-1');
     window.scrollTo({ top: 0 });
@@ -287,15 +296,17 @@ export function mountForm(root, form, opts = {}) {
       if (!preview && api && !powP) powP = startChallenge();
       idx = 0; persist(); renderScreen();
     };
-    const node = h('section', { class: 'cc-screen', 'aria-labelledby': 'cc-title' },
-      h('h1', { id: 'cc-title', text: form.title }),
-      s.intro && h('p', { class: 'cc-lead', text: s.intro }),
-      notice(form),
-      s.one_per_device && done && h('p', { class: 'cc-warn', text: 'It looks like you’ve already answered on this device, thank you! (This is only a note on your device. Nothing was sent anywhere.) You’re welcome to answer again.' }),
-      resumed && h('p', { class: 'cc-warn', text: 'We kept your earlier answers on this device, so you can carry on where you left off.' }),
-      h('div', { class: 'cc-nav' }, h('button', { type: 'button', class: 'cc-btn', onClick: () => { if (resumed && idx > 0) { if (!preview && api && !powP) powP = startChallenge(); renderScreen(); } else start(); }, text: resumed ? 'Continue' : 'Start' }),
-        resumed && h('button', { type: 'button', class: 'cc-btn link', onClick: () => { Object.keys(answers).forEach((k) => delete answers[k]); idx = -1; resumed = false; store.del(key); renderIntro(); }, text: 'Start over' })),
-    );
+    const node = h('section', { class: 'cc-screen', 'data-mode': 'wide', 'aria-labelledby': 'cc-title' },
+      h('div', { class: 'cc-split' },
+        h('div', { class: 'cc-split-a' },
+          h('h1', { id: 'cc-title', text: form.title }),
+          s.intro && h('p', { class: 'cc-lead', text: s.intro })),
+        h('div', { class: 'cc-split-b' },
+          notice(form),
+          s.one_per_device && done && h('p', { class: 'cc-warn', text: 'It looks like you’ve already answered on this device, thank you! (This is only a note on your device. Nothing was sent anywhere.) You’re welcome to answer again.' }),
+          resumed && h('p', { class: 'cc-warn', text: 'We kept your earlier answers on this device, so you can carry on where you left off.' }),
+          h('div', { class: 'cc-nav' }, h('button', { type: 'button', class: 'cc-btn', onClick: () => { if (resumed && idx > 0) { if (!preview && api && !powP) powP = startChallenge(); renderScreen(); } else start(); }, text: resumed ? 'Continue' : 'Start' }),
+            resumed && h('button', { type: 'button', class: 'cc-btn link', onClick: () => { Object.keys(answers).forEach((k) => delete answers[k]); idx = -1; resumed = false; store.del(key); renderIntro(); }, text: 'Start over' })))));
     show(node);
   }
 
@@ -407,7 +418,7 @@ export function mountForm(root, form, opts = {}) {
   }
 
   function closed() {
-    show(h('section', { class: 'cc-screen' }, h('h1', { text: 'This form is closed' }), h('p', { class: 'cc-lead', text: 'It isn’t taking answers any more. Thank you for stopping by.' })));
+    show(h('section', { class: 'cc-screen', 'data-mode': 'wide' }, h('h1', { text: 'This form is closed' }), h('p', { class: 'cc-lead', text: 'It isn’t taking answers any more. Thank you for stopping by.' })));
   }
 
   function done(res) {
@@ -415,15 +426,18 @@ export function mountForm(root, form, opts = {}) {
     const redirect = typeof s.redirect === 'string' && /^https:\/\/[^\s]+$/.test(s.redirect) ? s.redirect : null;
     let follow = null;
     if (!identified && s.follow_up && s.follow_up.enabled && api) follow = followUpBox(s.follow_up);
-    const node = h('section', { class: 'cc-screen', 'aria-labelledby': 'cc-done' },
-      h('h1', { id: 'cc-done', text: 'All done' }),
-      h('p', { class: 'cc-lead', text: s.thanks || 'That helps more than you might think. Take a breath, you’re done.' }),
-      res.preview && h('p', { class: 'cc-warn', text: 'Preview only: nothing was sent.' }),
-      res.deleteToken && h('div', {}, h('p', { text: 'Your deletion code. Keep it somewhere safe: it’s the only way to delete your answers yourself.' }), h('div', { class: 'cc-token', text: res.deleteToken }),
-        h('p', { class: 'cc-warn' }, 'To delete later, go to ', h('a', { href: '/f/', text: 'cc.braunf.com/f/' }), ' and paste it in.')),
-      follow, crisis && h('p', { class: 'cc-crisis', text: crisis }),
-      redirect && h('p', {}, h('a', { href: redirect, rel: 'noopener', text: 'Continue →' })),
-      h('p', { class: 'cc-foot' }, h('a', { href: assetBase + 'index.html', text: 'About CalmCampus' })));
+    const node = h('section', { class: 'cc-screen', 'data-mode': 'wide', 'aria-labelledby': 'cc-done' },
+      h('div', { class: 'cc-split' },
+        h('div', { class: 'cc-split-a' },
+          h('h1', { id: 'cc-done', text: 'All done' }),
+          h('p', { class: 'cc-lead', text: s.thanks || 'That helps more than you might think. Take a breath, you’re done.' }),
+          res.preview && h('p', { class: 'cc-warn', text: 'Preview only: nothing was sent.' }),
+          res.deleteToken && h('div', {}, h('p', { text: 'Your deletion code. Keep it somewhere safe: it’s the only way to delete your answers yourself.' }), h('div', { class: 'cc-token', text: res.deleteToken }),
+            h('p', { class: 'cc-warn' }, 'To delete later, go to ', h('a', { href: '/f/', text: 'cc.braunf.com/f/' }), ' and paste it in.')),
+          redirect && h('p', {}, h('a', { href: redirect, rel: 'noopener', text: 'Continue →' }))),
+        h('div', { class: 'cc-split-b' },
+          follow, crisis && h('p', { class: 'cc-crisis', text: crisis }),
+          h('p', { class: 'cc-foot' }, h('a', { href: assetBase + 'index.html', text: 'About CalmCampus' })))));
     progressWrap.hidden = true; show(node, 'All done. Thank you.');
     if (redirect && !preview) setTimeout(() => location.assign(redirect), 6000);
   }

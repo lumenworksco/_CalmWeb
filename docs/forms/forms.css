@@ -195,3 +195,28 @@ body.cc-form-page { overflow-x: clip; background: var(--bg); color: var(--fg); f
 @media (max-width: 699px) { .cc-cover i:nth-child(2) { display: none; } }
 @media (min-width: 900px) { .cc-form { padding-top: 36px; padding-bottom: 120px; } .cc-screen h1 { font-size: 56px; } .cc-lead { font-size: 21px; } }
 @media (max-width: 420px) { .cc-form { padding: 14px 16px 64px; } .cc-scale .cc-choice span.box { font-size: 18px; } }
+
+/* ── Wide screens: use the width ──────────────────────────────────────────────────────
+   Container queries, not media queries, so the admin's phone-sized preview frame stays a phone layout. */
+.cc-viewport, .frame { container-type: inline-size; container-name: ccf; }
+.cc-split-a, .cc-split-b { min-width: 0; }
+.cc-outline { display: none; list-style: none; }
+@container ccf (min-width: 1000px) {
+  .cc-form { max-width: 1200px; padding: 40px 56px 120px; display: grid; grid-template-columns: 290px minmax(0, 1fr); column-gap: 88px; grid-template-areas: "top top" "side main"; align-items: start; }
+  .cc-top { grid-area: top; padding-bottom: 40px; }
+  .cc-top img { height: 34px; }
+  .cc-side { grid-area: side; position: sticky; top: 36px; }
+  .cc-side[hidden] { display: none; }
+  .cc-stage { grid-area: main; min-width: 0; }
+  .cc-form[data-mode="wide"] .cc-stage { grid-column: 1 / -1; }
+  .cc-form[data-mode="flow"] .cc-stage { max-width: 680px; }
+  .cc-split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); column-gap: 96px; align-items: start; }
+  .cc-split-b { padding-top: 14px; }
+  .cc-split-b .cc-notice { margin-top: 0; }
+  .cc-screen h1 { font-size: clamp(48px, 5.4vw, 72px); }
+  .cc-lead { font-size: 22px; max-width: 34em; }
+  .cc-outline { display: block; margin-top: 28px; border-left: 2px solid var(--line); }
+  .cc-outline li { position: relative; padding: 8px 0 8px 18px; font-weight: 600; color: var(--fg-soft); }
+  .cc-outline li[aria-current="step"] { color: var(--fg); }
+  .cc-outline li[aria-current="step"]::before { content: ""; position: absolute; left: -2px; top: 6px; bottom: 6px; width: 2px; background: var(--accent); }
+}
