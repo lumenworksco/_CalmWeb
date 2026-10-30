@@ -6,7 +6,7 @@
 import { checkAnswer, isQuestion, isScale, scaleOf, visiblePages, isShown, pipe, TYPES } from './core.js';
 import { solve } from './pow.js';
 
-export const CRISIS_DEFAULT = 'CalmCampus supports wellbeing and is not a medical service. If you need help right now, please contact your university’s student support or local emergency services. In Belgium: Tele-Onthaal on 106 (anonymous, 24/7), the Zelfmoordlijn on 1813 (24/7), or 112 in an emergency. In the Netherlands: 113 Zelfmoordpreventie (call 113 or 0800-0113), or 112 in an emergency.';
+export const CRISIS_DEFAULT = 'CalmCampus supports wellbeing and is not a medical service. If you need help right now, please contact your university’s student support or local emergency services. In Belgium: Tele-Onthaal on 106 (anonymous, 24/7), the Zelfmoordlijn on 1813 (24/7), or 112 in an emergency.';
 export const CONTACT_DEFAULT = 'contact@calm.braunf.com';
 const FACES = [
   'M9 16 Q12 12.5 15 16', 'M9 15.5 Q12 13.5 15 15.5', 'M9 15 H15', 'M9 14 Q12 17 15 14', 'M8.5 13.5 Q12 19 15.5 13.5',
