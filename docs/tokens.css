@@ -1,0 +1,41 @@
+/* CalmCampus design tokens: shared by the site (site.css) and the forms platform (forms/forms.css).
+   Brand pack "Warm ground, two leaves". Dark values live in forms/forms.css. */
+
+@font-face {
+  font-family: "Caprasimo"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("assets/fonts/caprasimo-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Figtree"; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url("assets/fonts/figtree-latin.woff2") format("woff2");
+}
+
+:root {
+  --cream: #f5ead8;
+  --sand: #ebddc5;
+  --ink: #201e1d;
+  --terracotta: #c67139;
+  --sage: #7a8a5e;
+
+  --cream-100: #f9f4ed;
+  --terracotta-aa: #a05524; /* terracotta darkened to pass WCAG AA with cream text (4.6:1) */
+  --terracotta-100: #fff2eb;
+  --terracotta-200: #ffe1d0;
+  --terracotta-600: #b2622d;
+  --terracotta-700: #8c491a;
+  --terracotta-800: #643312;
+  --sage-100: #f0fae1;
+  --sage-200: #e1eecc;
+  --sage-300: #ccdbb2;
+  --sage-700: #56633f;
+  --sage-800: #3d472b;
+  --sage-900: #272e1b;
+  --neutral-300: #dcd3c4;
+  --neutral-800: #474238;
+
+  --divider: color-mix(in srgb, var(--ink) 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2e2b25 22%, transparent);
+
+  --font-heading: "Caprasimo", Georgia, "Times New Roman", serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
