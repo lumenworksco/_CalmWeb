@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security issue
+    url: https://github.com/lumenworksco/_CalmWeb/security/advisories/new
+    about: Report privately, not as a public issue.
+  - name: App issue (iOS, model)
+    url: https://github.com/lumenworksco/CalmCampus/issues/new/choose
+    about: Problems with the CalmCampus app belong in the app repo.
