@@ -1,6 +1,6 @@
-# calmweb
+# _CalmWeb
 
-The web side of CalmCampus: pitch site, impact report and evidence dossier for [CalmCampus](https://github.com/lumenworksco/CalmCampus), a privacy-first wellness companion for university students. Live at [cc.braunf.com](https://cc.braunf.com/).
+The web side of CalmCampus: pitch site, impact report and evidence dossier for [CalmCampus](https://github.com/lumenworksco/CalmCampus) (the app lives in that repo), a privacy-first wellness companion for university students. Live at [cc.braunf.com](https://cc.braunf.com/).
 
 ```
 docs/       The site (plain HTML/CSS), served by GitHub Pages from /docs (CNAME: cc.braunf.com)
