@@ -11,7 +11,7 @@ A custom form builder and public form pages in the CalmCampus design system, run
                                               ▼
                                          Supabase Postgres (EU region), RLS on every table
 
- admin     ──► <admin-host>       static admin app (Cloudflare Pages), email + password sign-in
+ admin     ──► ccadmin.braunf.com       static admin app (Cloudflare Pages), email + password sign-in
             ──► Supabase directly         RLS lets only users in `admins` read or write anything
 ```
 
@@ -77,7 +77,7 @@ None of this is automated, because it creates accounts and changes DNS. Do these
    - Create your admin user (Authentication → Users → Add user), then in the SQL editor: `insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';`
 2. **Admin config.** Put the project URL and the **anon** key in `admin/config.js` (both are public by design; RLS protects the data). Never put the service key anywhere in the repo.
 3. **Worker.** In `worker/`: `npx wrangler secret put SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `CHALLENGE_SECRET` (a long random string), uncomment `routes` in `wrangler.toml`, then `npx wrangler deploy`. This needs braunf.com on Cloudflare with the `cc` record proxied. *(DNS change: yours to make.)*
-4. **Admin hosting.** `bash scripts/deploy-admin.sh` assembles the admin and deploys it as a small static Cloudflare site (`calmweb-admin`, config in `admin/wrangler.toml`), at its own address on workers.dev. Optionally add a custom domain in the Cloudflare dashboard (the site → Settings → Domains & Routes), one level under braunf.com such as `ccadmin.braunf.com`, because the free certificate covers `*.braunf.com` but not deeper names. *(DNS change: yours to make.)* Optionally put Cloudflare Access in front as a second lock. Re-run the script after changing anything under `admin/` or the shared form files.
-5. **Create the first form.** Sign in at <admin-host>, New form, “Student stress & support: demand case study”, review the words, Settings → check the privacy notice, Publish. The link is `https://cc.braunf.com/f/case-study`.
+4. **Admin hosting.** `bash scripts/deploy-admin.sh` assembles the admin and deploys it as a small static Cloudflare site (`calmweb-admin`, config in `admin/wrangler.toml`), at its own address on workers.dev. The admin runs at `https://ccadmin.braunf.com` (added in the Cloudflare dashboard: the site → Domains → Add Domain). Names go one level under braunf.com because the free certificate covers `*.braunf.com` but not deeper names. *(DNS change: yours to make.)* Optionally put Cloudflare Access in front as a second lock. Re-run the script after changing anything under `admin/` or the shared form files.
+5. **Create the first form.** Sign in at ccadmin.braunf.com, New form, “Student stress & support: demand case study”, review the words, Settings → check the privacy notice, Publish. The link is `https://cc.braunf.com/f/case-study`.
 
 GitHub Pages settings and the `CNAME` file are untouched by all of this.
