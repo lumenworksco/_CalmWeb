@@ -45,4 +45,4 @@ http.createServer(async (req, res) => {
   candidates.push(path.join(root, 'docs', p));
   if (candidates.some((f) => serveFile(res, f))) return;
   res.writeHead(404, { 'content-type': 'text/plain' }); res.end('not found');
-}).listen(port, () => console.log(`CalmWeb dev server: http://localhost:${port}   admin: http://localhost:${port}/admin/  (login code 000000)`));
+}).listen(port, () => console.log(`CalmWeb dev server: http://localhost:${port}   admin: http://localhost:${port}/admin/  (sign in with any email and any password)`));

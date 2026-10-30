@@ -11,7 +11,7 @@ A custom form builder and public form pages in the CalmCampus design system, run
                                               ▼
                                          Supabase Postgres (EU region), RLS on every table
 
- admin     ──► admin.cc.braunf.com       static admin app (Cloudflare Pages), signs in with an email code
+ admin     ──► <admin-host>       static admin app (Cloudflare Pages), email + password sign-in
             ──► Supabase directly         RLS lets only users in `admins` read or write anything
 ```
 
@@ -58,7 +58,7 @@ Surveys differ from the app: the CalmCampus app keeps its data on the phone, but
 ## Local development (no accounts, no Docker)
 
 ```bash
-node scripts/dev-server.mjs          # http://localhost:3400 , admin at /admin/ , login code 000000
+node scripts/dev-server.mjs          # http://localhost:3400 , admin at /admin/ , sign in with any email and password
 node scripts/seed-dev.mjs            # publishes the four templates: /f/case-study, /f/waitlist, ...
 node --test tests/*.test.mjs         # core, proof-of-work and Worker tests
 bash supabase/tests/run.sh           # migration, RLS and anonymity tests (needs PostgreSQL 14+ binaries)
@@ -72,11 +72,12 @@ The dev server serves the site, the admin, the real Worker code and an in-memory
 None of this is automated, because it creates accounts and changes DNS. Do these once.
 
 1. **Supabase** (EU region: Frankfurt or Ireland). Create a project, then run `supabase/migrations/*.sql` (SQL editor, or `supabase db push`).
-   - Authentication: turn **off** “Allow new users to sign up”. Turn on the Email provider. In the “Magic Link” email template, include `{{ .Token }}` so the email carries a code.
+   - Authentication: turn **off** “Allow new users to sign up” and keep the Email provider on. Supabase's default email sender is fine: sign-in is email + password, with an emailed link as a fallback (no custom template needed).
+   - URL Configuration: set the Site URL to your admin address (needed only for the emailed-link fallback).
    - Create your admin user (Authentication → Users → Add user), then in the SQL editor: `insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';`
 2. **Admin config.** Put the project URL and the **anon** key in `admin/config.js` (both are public by design; RLS protects the data). Never put the service key anywhere in the repo.
 3. **Worker.** In `worker/`: `npx wrangler secret put SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `CHALLENGE_SECRET` (a long random string), uncomment `routes` in `wrangler.toml`, then `npx wrangler deploy`. This needs braunf.com on Cloudflare with the `cc` record proxied. *(DNS change: yours to make.)*
-4. **Admin hosting.** A Cloudflare Pages project on this repo: build command `bash scripts/assemble-admin.sh`, output directory `dist-admin`, custom domain `admin.cc.braunf.com`. *(DNS change: yours to make.)* Optionally put Cloudflare Access in front as a second lock.
-5. **Create the first form.** Sign in at admin.cc.braunf.com, New form, “Student stress & support: demand case study”, review the words, Settings → check the privacy notice, Publish. The link is `https://cc.braunf.com/f/case-study`.
+4. **Admin hosting.** A Cloudflare Pages project on this repo: build command `bash scripts/assemble-admin.sh`, output directory `dist-admin`, custom domain `<admin-host>`. Use a name one level under braunf.com (for example `ccadmin.braunf.com`): Cloudflare's free certificate covers `*.braunf.com`, not deeper names. *(DNS change: yours to make.)* Optionally put Cloudflare Access in front as a second lock.
+5. **Create the first form.** Sign in at <admin-host>, New form, “Student stress & support: demand case study”, review the words, Settings → check the privacy notice, Publish. The link is `https://cc.braunf.com/f/case-study`.
 
 GitHub Pages settings and the `CNAME` file are untouched by all of this.

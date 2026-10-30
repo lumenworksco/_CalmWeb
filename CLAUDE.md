@@ -13,7 +13,7 @@ CalmWeb: the web side of CalmCampus (the iOS app lives in `lumenworksco/CalmCamp
 
 ```bash
 python3 -m http.server 3400 --directory docs   # site only, http://localhost:3400
-node scripts/dev-server.mjs                    # site + forms + admin (/admin/, code 000000) + Worker + fake Supabase
+node scripts/dev-server.mjs                    # site + forms + admin (/admin/, any email and password) + Worker + fake Supabase
 node scripts/seed-dev.mjs                      # publish the templates into the running dev server
 python3 scripts/check-site.py                  # links resolve, nothing loads from third parties
 node --test tests/*.test.mjs                   # core, proof-of-work, Worker

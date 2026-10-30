@@ -16,28 +16,26 @@ function shell(crumb, ...right) {
     h('button', { class: 'btn ghost sm', onClick: async () => { await auth.signOut(); route(); }, text: 'Sign out' }));
 }
 
-// ── Login: Supabase email code, then RLS decides if you are an admin ─────────────────────
+// ── Login: Supabase email + password (or an emailed link); RLS decides if you are an admin ──
 function login() {
-  let email = '', handler = null;
   const msg = h('p', { class: 'msg', role: 'status' });
-  const box = h('form', { onSubmit: (e) => { e.preventDefault(); handler && handler(); } });
   const say = (text, err) => { msg.textContent = text; msg.className = 'msg' + (err ? ' err' : ''); };
-  const askEmail = () => {
-    const input = h('input', { type: 'email', id: 'em', autocomplete: 'email', required: true, value: email });
-    box.replaceChildren(h('div', { class: 'field' }, h('label', { for: 'em', text: 'Email' }), input), h('button', { class: 'btn', type: 'submit', text: 'Send me a code' }));
-    handler = async () => { email = input.value.trim(); say(''); try { await auth.sendCode(email); askCode(); } catch (err) { say(err.message, true); } };
-    input.focus();
-  };
-  const askCode = () => {
-    const input = h('input', { type: 'text', id: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 10, required: true });
-    box.replaceChildren(h('p', { class: 'sub', text: `We sent a code to ${email}.` }), h('div', { class: 'field' }, h('label', { for: 'code', text: 'Code' }), input),
-      h('div', { class: 'row' }, h('button', { class: 'btn', type: 'submit', text: 'Sign in' }), h('button', { class: 'btn ghost', type: 'button', onClick: askEmail, text: 'Back' })));
-    handler = async () => { try { await auth.verify(email, input.value.trim()); location.hash = '#/'; route(); } catch (err) { say(err.message, true); } };
-    input.focus();
-  };
+  const em = h('input', { type: 'email', id: 'em', autocomplete: 'username', required: true });
+  const pw = h('input', { type: 'password', id: 'pw', autocomplete: 'current-password' });
+  const form = h('form', { onSubmit: async (e) => {
+    e.preventDefault(); say('');
+    try { await auth.signIn(em.value.trim(), pw.value); location.hash = '#/'; route(); } catch (err) { say(err.message, true); }
+  } },
+    h('div', { class: 'field' }, h('label', { for: 'em', text: 'Email' }), em),
+    h('div', { class: 'field' }, h('label', { for: 'pw', text: 'Password' }), pw),
+    h('div', { class: 'row' }, h('button', { class: 'btn', type: 'submit', text: 'Sign in' }),
+      h('button', { class: 'btn ghost', type: 'button', text: 'Email me a link instead', onClick: async () => {
+        if (!em.value.trim()) { say('Enter your email first.', true); return; }
+        try { await auth.sendLink(em.value.trim()); say('Check your email and open the link on this device.'); } catch (err) { say(err.message, true); }
+      } })));
   app.replaceChildren(h('main', { class: 'login' }, h('img', { src: LOGO, alt: 'CalmCampus', height: 34 }), h('h1', { text: 'Forms' }),
-    h('p', { class: 'sub', text: 'Private. Only invited people can sign in.' }), box, msg));
-  askEmail();
+    h('p', { class: 'sub', text: 'Private. Only invited people can sign in.' }), form, msg));
+  em.focus();
 }
 
 // ── Forms list ────────────────────────────────────────────────────────────────────────
@@ -99,6 +97,7 @@ function fail(e) { app.replaceChildren(shell('Forms'), h('main', { class: 'page'
 
 // ── Router ────────────────────────────────────────────────────────────────────────────
 async function route() {
+  await auth.consumeHash();
   if (cleanup) { cleanup(); cleanup = null; }
   if (!auth.signedIn) { if (location.hash !== '#/login') history.replaceState(null, '', '#/login'); return login(); }
   const m = location.hash.match(/^#\/f\/([0-9a-f-]{36})(?:\/(\w+))?/);

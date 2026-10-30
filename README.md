@@ -39,7 +39,7 @@ python3 -m http.server 3400 --directory docs
 To run the site **and** the forms platform (public forms, admin at `/admin/`, the real Worker code and an in-memory stand-in for Supabase, no accounts and no Docker; needs Node 20+):
 
 ```bash
-node scripts/dev-server.mjs      # http://localhost:3400 , admin login code: 000000
+node scripts/dev-server.mjs      # http://localhost:3400 , admin sign-in: any email and password
 node scripts/seed-dev.mjs        # publishes the four templates, e.g. /f/case-study
 ```
 
