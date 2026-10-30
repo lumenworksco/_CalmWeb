@@ -72,3 +72,13 @@ test('CSV uses labels, escapes, and neutralises formula injection', () => {
   assert.match(csv, /2026-10-26,Yes,,"'=HYPERLINK\(""x""\)",/);
   assert.match(csv, /One; Two/);
 });
+
+import { createHash } from 'node:crypto';
+import { sha256, solve, check } from '../docs/forms/pow.js';
+test('pow: sha256 matches Node, solve/check agree', async () => {
+  for (const s of ['', 'abc', 'x'.repeat(55), 'x'.repeat(56), 'x'.repeat(64), 'x'.repeat(200)])
+    assert.equal(Buffer.from(sha256(new TextEncoder().encode(s))).toString('hex'), createHash('sha256').update(s).digest('hex'));
+  const c = await solve('tok.en', 12);
+  assert.ok(await check('tok.en', c, 12));
+  assert.ok(!(await check('tok.en', -1, 12)));
+});
