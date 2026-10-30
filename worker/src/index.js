@@ -58,7 +58,7 @@ async function rpc(env, fn, args) {
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const publicForm = (f) => ({ slug: f.slug, title: f.title, version: f.version, privacy_mode: f.privacy_mode, doc: f.doc, settings: publicSettings(f.settings), open: f.open });
 // Settings the respondent needs; never leak internal fields.
-const publicSettings = (s = {}) => ({ intro: s.intro, thanks: s.thanks, redirect: s.redirect, consent: s.consent, retention_days: s.retention_days, follow_up: s.follow_up, view: s.view, accent: s.accent, cover: s.cover, one_per_device: s.one_per_device, contact_email: s.contact_email });
+const publicSettings = (s = {}) => ({ intro: s.intro, thanks: s.thanks, redirect: s.redirect, consent: s.consent, retention_days: s.retention_days, follow_up: s.follow_up, view: s.view, accent: s.accent, cover: s.cover, one_per_device: s.one_per_device, contact_email: s.contact_email, wellbeing: s.wellbeing, crisis: s.crisis, who: s.who, purpose: s.purpose, contact_fields: s.contact_fields, retention_text: s.retention_text });
 
 async function readJson(request, max = 100_000) {
   const text = await request.text();
