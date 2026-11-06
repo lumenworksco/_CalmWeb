@@ -49,7 +49,7 @@ export const TEMPLATES = [
     privacy_mode: 'anonymous',
     settings: {
       view: 'pages', cover: 'sage', wellbeing: true,
-      intro: 'A few quick questions about how students deal with feeling run down, and whether a short weekly check-in would help. It takes about two minutes. Five questions are required; skip any of the others.\n\nWe’re not medical professionals: if you’re struggling, please talk to a doctor or your student support service.',
+      intro: 'A few quick questions about how students deal with feeling run down, and whether a short weekly check-in would help. It takes about two minutes. Five questions are required; skip any of the others.\n\nWe’re not medical professionals: if you’re struggling, please talk to a doctor or your student support service.\n\nNo account, no email, no tracking in your answers. We can’t tell who you are. Please don’t put names or details that could identify you or other people.',
       thanks: 'Thank you. Your answers help us build something that’s actually useful for students.',
       follow_up: { enabled: true, title: 'Want to hear what we learn?', text: 'Leave your email if you’d like us to share what we learn. This is optional and is not linked to your survey answers.', button: 'Keep me posted' },
     },
@@ -57,8 +57,8 @@ export const TEMPLATES = [
       { id: 'p-you', title: 'About you', blocks: [
         q('student_level', 'single_choice', 'Are you currently a student?', { required: true, options: opts('Bachelor', 'Master', 'PhD', 'Other programme', 'I’m not a student') }),
         q('year', 'single_choice', 'Which year are you in?', { options: opts('1st', '2nd', '3rd', '4th or later'), show_if: STUDENTS_ONLY }),
-        q('university', 'dropdown', 'Which university do you study at?', { required: true, help: 'This stays anonymous. We only use it to group answers.', other: true, show_if: STUDENTS_ONLY,
-          options: opts('KU Leuven', 'UGent', 'VUB', 'ULB', 'UAntwerp', 'UHasselt', 'UCLouvain', 'ULiège', 'University of Luxembourg', 'Leiden University', 'Utrecht University', 'TU Delft', 'University of Amsterdam', 'University of Groningen', 'Radboud University', 'Prefer not to say') }),
+        q('university', 'dropdown', 'Which university do you study at?', { required: true, help: 'This stays anonymous. We only use it to group answers.', other: true, otherMaxLength: 120, show_if: STUDENTS_ONLY,
+          options: opts('KU Leuven', 'UCLouvain', 'UGent', 'VUB', 'UAntwerp', 'ULiège', 'UHasselt', 'UMONS', 'UNamur', 'University of Luxembourg', 'Leiden University', 'Utrecht University', 'TU Delft', 'TU Eindhoven', 'University of Amsterdam', 'VU Amsterdam', 'Erasmus University Rotterdam', 'Radboud University', 'University of Twente', 'Tilburg University', 'University of Groningen', 'Maastricht University', 'Prefer not to say') }),
       ] },
       { id: 'p-now', title: 'How it feels', blocks: [
         q('exhausted', 'single_choice', 'In the past semester, how often did you feel exhausted or overwhelmed by your studies?', { required: true, show_if: STUDENTS_ONLY, options: opts('Never', 'Sometimes', 'Often', 'Almost always') }),

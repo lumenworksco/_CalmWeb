@@ -192,7 +192,7 @@ const ends = (b) => (b.minLabel || b.maxLabel) ? h('div', { class: 'cc-ends', 'a
 
 function otherInput(b, ctx, active) {
   if (!b.other) return { el: null, refresh() {} };
-  const input = h('input', { type: 'text', class: 'cc-other-in', maxlength: 300, 'aria-label': `Other: please say what`, placeholder: 'Please say what', value: ctx.answers[`${b.id}.other`] ?? '', onInput: (e) => ctx.set(`${b.id}.other`, e.target.value) });
+  const input = h('input', { type: 'text', class: 'cc-other-in', maxlength: Math.min(b.otherMaxLength || 300, 300), 'aria-label': `Other: please say what`, placeholder: 'Please say what', value: ctx.answers[`${b.id}.other`] ?? '', onInput: (e) => ctx.set(`${b.id}.other`, e.target.value) });
   const el = h('div', { class: 'cc-other' }, input);
   const refresh = () => { el.hidden = !active(); };
   refresh();

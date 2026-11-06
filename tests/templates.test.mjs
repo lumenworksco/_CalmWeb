@@ -86,3 +86,21 @@ test('student-stress-2026 asks nothing it should not, and promises nothing that 
     assert.ok(!/\b(name|email|e-mail|age|faculty)\b/i.test(b.label.replace(/Which university do you study at/i, '')), `identifying question? ${b.label}`);
   }
 });
+
+test('student-stress-2026: exact brief wording', () => {
+  assert.equal(t.settings.intro, 'A few quick questions about how students deal with feeling run down, and whether a short weekly check-in would help. It takes about two minutes. Five questions are required; skip any of the others.\n\nWe’re not medical professionals: if you’re struggling, please talk to a doctor or your student support service.\n\nNo account, no email, no tracking in your answers. We can’t tell who you are. Please don’t put names or details that could identify you or other people.');
+  assert.equal(t.settings.thanks, 'Thank you. Your answers help us build something that’s actually useful for students.');
+  assert.deepEqual(t.settings.follow_up, { enabled: true, title: 'Want to hear what we learn?', text: 'Leave your email if you’d like us to share what we learn. This is optional and is not linked to your survey answers.', button: 'Keep me posted' });
+  const uni = blocks(t).find((b) => b.id === 'university');
+  assert.deepEqual(uni.options.map((o) => o.label), ['KU Leuven', 'UCLouvain', 'UGent', 'VUB', 'UAntwerp', 'ULiège', 'UHasselt', 'UMONS', 'UNamur', 'University of Luxembourg', 'Leiden University', 'Utrecht University', 'TU Delft', 'TU Eindhoven', 'University of Amsterdam', 'VU Amsterdam', 'Erasmus University Rotterdam', 'Radboud University', 'University of Twente', 'Tilburg University', 'University of Groningen', 'Maastricht University', 'Prefer not to say']);
+  assert.equal(uni.other, true);
+  assert.equal(uni.help, 'This stays anonymous. We only use it to group answers.');
+  assert.equal(blocks(t).find((b) => b.id === 'student_level').other, undefined, 'no free-text Other on the first question');
+});
+
+test('student-stress-2026: the “Other” university text is capped at 120 characters on the server', () => {
+  const long = 'x'.repeat(250);
+  const r = validateSubmission(t.doc, { student_level: 'o1', university: 'other', 'university.other': long, exhausted: 'o1', checkin: 'o1', where: 'o1' });
+  assert.ok(r.ok);
+  assert.equal(r.clean['university.other'].length, 120);
+});
