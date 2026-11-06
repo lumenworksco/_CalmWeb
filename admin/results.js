@@ -11,13 +11,13 @@ export async function mountResults(root, form, id) {
   const [versions, reach, followUps, rawRows] = await Promise.all([db.versions(id), db.reach(id), identified ? [] : db.followUps(id), identified ? db.identified(id) : db.responses(id)]);
   if (!versions.length) return root.replaceChildren(h('div', { class: 'empty' }, h('p', { text: 'Nothing here yet. Publish the form and share the link.' })));
   const all = shuffled(rawRows.map((r) => ({ ...r, week: r.week || r.submitted_on })));   // shuffled: order never reveals submission order
-  const st = { version: 'all', q: '', fq: '', fv: '', limit: 100 };
+  const st = { version: 'all', q: '', fq: '', fv: '', fneg: false, limit: 100 };
 
   const docFor = () => (st.version === 'all' ? versions[0] : versions.find((v) => String(v.version) === st.version)).doc;
   const inScope = () => all.filter((r) => st.version === 'all' || String(r.version) === st.version);
 
   function matches(r, doc) {
-    if (st.fq) { const v = r.answers[st.fq]; const hit = Array.isArray(v) ? v.includes(st.fv) : String(v) === st.fv; if (!hit) return false; }
+    if (st.fq && st.fv) { const v = r.answers[st.fq]; const hit = Array.isArray(v) ? v.includes(st.fv) : String(v) === st.fv; if (st.fneg ? hit : !hit) return false; }
     if (st.q) { const needle = st.q.toLowerCase(); const hay = JSON.stringify(Object.values(r.answers)).toLowerCase() + (r.contact ? JSON.stringify(r.contact).toLowerCase() : ''); if (!hay.includes(needle)) return false; }
     return true;
   }
@@ -25,7 +25,7 @@ export async function mountResults(root, form, id) {
   function draw() {
     const doc = docFor(), scope = inScope(), qs = doc.pages.flatMap((p) => p.blocks).filter(isQuestion);
     const filtered = scope.filter((r) => matches(r, doc));
-    const filtering = !!(st.q || st.fq);
+    const filtering = !!(st.q || (st.fq && st.fv));
     const hide = filtering && filtered.length < MIN_GROUP;
     const label = (b, x) => (x === 'other' ? 'Other' : (b.options || []).find((o) => o.id === x)?.label ?? x);
     const cell = (b, v) => v === undefined ? '' : hasOptions(b) ? (Array.isArray(v) ? v.map((x) => label(b, x)).join(', ') : label(b, v)) : Array.isArray(v) ? v.join(', ') : String(v);
@@ -38,10 +38,13 @@ export async function mountResults(root, form, id) {
     const weeks = {}; for (const r of scope) weeks[r.week] = (weeks[r.week] || 0) + 1;
 
     const vSel = h('select', { 'aria-label': 'Version', onChange: (e) => { st.version = e.target.value; st.fq = ''; st.fv = ''; draw(); } }, h('option', { value: 'all', text: 'All versions' }), versions.map((v) => h('option', { value: String(v.version), text: `Version ${v.version} (${fmtDate(v.published_at)})` }))); vSel.value = st.version;
-    const fqSel = h('select', { 'aria-label': 'Filter by question', onChange: (e) => { st.fq = e.target.value; st.fv = ''; draw(); } }, h('option', { value: '', text: 'Filter by answer…' }), qs.filter((b) => hasOptions(b) && b.type !== 'ranking' || b.type === 'yes_no').map((b) => h('option', { value: b.id, text: b.label.slice(0, 60) }))); fqSel.value = st.fq;
+    const fqSel = h('select', { 'aria-label': 'Filter by question', onChange: (e) => { st.fq = e.target.value; st.fv = ''; st.fneg = false; draw(); } }, h('option', { value: '', text: 'Filter by answer…' }), qs.filter((b) => hasOptions(b) && b.type !== 'ranking' || b.type === 'yes_no').map((b) => h('option', { value: b.id, text: b.label.slice(0, 60) }))); fqSel.value = st.fq;
     const fb = st.fq && qs.find((b) => b.id === st.fq);
     const fvSel = fb && h('select', { 'aria-label': 'Answer', onChange: (e) => { st.fv = e.target.value; draw(); } }, h('option', { value: '', text: 'Any' }), (fb.type === 'yes_no' ? [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }] : [...fb.options, ...(fb.other ? [{ id: 'other', label: 'Other' }] : [])]).map((o) => h('option', { value: o.id, text: o.label })));
     if (fvSel) fvSel.value = st.fv;
+    // "is not" lets you leave a group out, e.g. everyone except "I'm not a student"
+    const negSel = fb && h('select', { 'aria-label': 'Match', onChange: (e) => { st.fneg = e.target.value === 'not'; draw(); } }, h('option', { value: 'is', text: 'is' }), h('option', { value: 'not', text: 'is not' }));
+    if (negSel) negSel.value = st.fneg ? 'not' : 'is';
     const search = h('input', { type: 'search', 'aria-label': 'Search answers', placeholder: 'Search answers…', value: st.q, onInput: (e) => { st.q = e.target.value; clearTimeout(draw.t); draw.t = setTimeout(() => { draw(); document.querySelector('.results input[type=search]')?.focus(); }, 300); } });
 
     const exportRows = scope.map((r) => ({ week: r.week, answers: r.answers, extra: identified ? [r.contact?.name || '', r.contact?.email || ''] : [] }));
@@ -78,7 +81,7 @@ export async function mountResults(root, form, id) {
         h('p', { class: 'hint', text: 'Plain counters per page. Nothing ties them to a person or to an answer.' })),
       Object.keys(weeks).length > 1 && h('div', {}, h('h2', { text: 'Responses by week' }), h('div', { class: 'q-sum' }, Object.entries(weeks).sort().map(([w, n]) => h('div', { class: 'bar-row' }, h('span', { text: 'Week of ' + w }), h('div', { class: 'track', 'aria-hidden': 'true' }, h('div', { class: 'fill', 'data-w': Math.round((n / Math.max(...Object.values(weeks))) * 100) })), h('span', { class: 'v', text: String(n) }))))),
       h('h2', { text: 'Answers by question' }),
-      h('div', { class: 'filters' }, search, fqSel, fvSel), filtering && !hide && h('p', { class: 'note', text: `${filtered.length} responses match.` }),
+      h('div', { class: 'filters' }, search, fqSel, negSel, fvSel), filtering && !hide && h('p', { class: 'note', text: `${filtered.length} responses match.` }),
       hide ? table : sums.map(chart),
       h('h2', { text: 'Responses' }), exports,
       !identified && !filtering && scope.length > 0 && scope.length < MIN_GROUP && h('p', { class: 'note', text: `Only ${scope.length} so far. With so few, free-text answers could identify someone, so handle them carefully.` }),

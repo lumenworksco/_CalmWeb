@@ -192,7 +192,7 @@ const ends = (b) => (b.minLabel || b.maxLabel) ? h('div', { class: 'cc-ends', 'a
 
 function otherInput(b, ctx, active) {
   if (!b.other) return { el: null, refresh() {} };
-  const input = h('input', { type: 'text', class: 'cc-other-in', maxlength: 300, 'aria-label': `Other: please say what`, placeholder: 'Please say what', value: ctx.answers[`${b.id}.other`] ?? '', onInput: (e) => ctx.set(`${b.id}.other`, e.target.value) });
+  const input = h('input', { type: 'text', class: 'cc-other-in', maxlength: Math.min(b.otherMaxLength || 300, 300), 'aria-label': `Other: please say what`, placeholder: 'Please say what', value: ctx.answers[`${b.id}.other`] ?? '', onInput: (e) => ctx.set(`${b.id}.other`, e.target.value) });
   const el = h('div', { class: 'cc-other' }, input);
   const refresh = () => { el.hidden = !active(); };
   refresh();
@@ -258,6 +258,10 @@ export function mountForm(root, form, opts = {}) {
       const l = current.nodes.get(b.id).querySelector('legend, label.cc-label');
       if (l && b.label.includes('{{')) l.firstChild.textContent = pipe(b.label, doc, answers);
     }
+    // an answer can remove later screens (for example a non-student leaving early): keep the progress and button honest
+    const total = activeScreens().length;
+    if (!progressWrap.hidden && idx < total + 1) { setProgress(idx, total + (identified ? 1 : 0)); }
+    if (current.nextBtn) current.nextBtn.textContent = idx >= total - 1 && !identified ? 'Send' : 'Next';
   }
 
   function setProgress(i, n) {
@@ -300,7 +304,7 @@ export function mountForm(root, form, opts = {}) {
       h('div', { class: 'cc-split' },
         h('div', { class: 'cc-split-a' },
           h('h1', { id: 'cc-title', text: form.title }),
-          s.intro && h('p', { class: 'cc-lead', text: s.intro })),
+          s.intro && s.intro.split(/\n{2,}/).map((para) => h('p', { class: 'cc-lead', text: para }))),
         h('div', { class: 'cc-split-b' },
           notice(form),
           s.one_per_device && done && h('p', { class: 'cc-warn', text: 'It looks like you’ve already answered on this device, thank you! (This is only a note on your device. Nothing was sent anywhere.) You’re welcome to answer again.' }),
@@ -320,15 +324,17 @@ export function mountForm(root, form, opts = {}) {
     const body = h('form', { novalidate: true, onSubmit: (e) => { e.preventDefault(); next(); } });
     for (const b of screen.blocks) { const n = widget(b, ctx); nodes.set(b.id, n); body.append(n); }
     body.append(h('input', { class: 'cc-hp', name: 'website', tabindex: '-1', autocomplete: 'off', 'aria-hidden': 'true' }));
-    current = { screen, nodes };
+    const nextBtn = h('button', { type: 'button', class: 'cc-btn', onClick: next });
+    current = { screen, nodes, nextBtn };
     const last = idx === screens.length - 1 && !identified;
+    nextBtn.textContent = last ? 'Send' : 'Next';
     const node = h('section', { class: 'cc-screen', 'aria-label': screen.title || `Step ${idx + 1}` },
       h('h1', { class: 'sr', text: form.title }),
       screen.title && view !== 'steps' && h('h2', { text: pipe(screen.title, doc, answers) }), body,
       h('div', { class: 'cc-nav' },
         idx > 0 && h('button', { type: 'button', class: 'cc-btn ghost', onClick: back, text: 'Back' }),
         h('span', { class: 'spacer' }),
-        h('button', { type: 'button', class: 'cc-btn', onClick: next, text: last ? 'Send' : 'Next' })));
+        nextBtn));
     progressWrap.hidden = false; setProgress(idx, screens.length + (identified ? 1 : 0));
     show(node, `Step ${idx + 1} of ${screens.length}`);
     syncVisibility();

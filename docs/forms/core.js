@@ -4,7 +4,7 @@
 //
 // Document: { pages: [{ id, title?, blocks: [Block] }] }
 // Block:    { id, type, label?, help?, required?, options?, other?, min?, max?, minLabel?, maxLabel?,
-//             maxLength?, show_if? }
+//             maxLength?, otherMaxLength?, show_if? }
 // show_if:  { all: [Cond] } | { any: [Cond] }   Cond: { q, op, value? }
 // Answers:  { [blockId]: value }; "Other" text lives under `${blockId}.other`.
 
@@ -168,7 +168,7 @@ export function validateSubmission(doc, answers) {
         clean[b.id] = r.value;
         const otherSelected = r.value === 'other' || (Array.isArray(r.value) && r.value.includes('other'));
         const t = answers[`${b.id}.other`];
-        if (b.other && otherSelected && typeof t === 'string' && t.trim()) clean[`${b.id}.other`] = t.trim().slice(0, 300);
+        if (b.other && otherSelected && typeof t === 'string' && t.trim()) clean[`${b.id}.other`] = t.trim().slice(0, Math.min(b.otherMaxLength || 300, 300));
       }
     }
   }
