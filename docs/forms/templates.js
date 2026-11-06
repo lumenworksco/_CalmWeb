@@ -4,6 +4,8 @@
 
 const opts = (...labels) => labels.map((label, i) => ({ id: 'o' + (i + 1), label }));
 const q = (id, type, label, extra = {}) => ({ id, type, label, ...extra });
+// Non-students leave after the first question: every later block is hidden when "I’m not a student" (the 5th option) is chosen.
+const STUDENTS_ONLY = { all: [{ q: 'student_level', op: 'neq', value: 'o5' }] };
 
 export const TEMPLATES = [
   {
@@ -36,6 +38,41 @@ export const TEMPLATES = [
       ] },
       { id: 'p-more', title: 'One last thing', blocks: [
         q('more', 'long_text', 'Anything else you’d like us to know?', { help: 'Optional. Please don’t include names or details that could identify you or anyone else.', maxLength: 1500 }),
+      ] },
+    ] },
+  },
+  {
+    id: 'student-stress-2026',
+    name: 'Student stress 2026: demand survey (with university)',
+    blurb: 'Eleven quick questions: are you a student, which university, how run down, how you cope, and whether a weekly check-in would help. Anonymous. Non-students exit after the first question.',
+    title: 'How do students handle stress?',
+    privacy_mode: 'anonymous',
+    settings: {
+      view: 'pages', cover: 'sage', wellbeing: true,
+      intro: 'A few quick questions about how students deal with feeling run down, and whether a short weekly check-in would help. It takes about two minutes. Five questions are required; skip any of the others.\n\nWe’re not medical professionals: if you’re struggling, please talk to a doctor or your student support service.',
+      thanks: 'Thank you. Your answers help us build something that’s actually useful for students.',
+      follow_up: { enabled: true, title: 'Want to hear what we learn?', text: 'Leave your email if you’d like us to share what we learn. This is optional and is not linked to your survey answers.', button: 'Keep me posted' },
+    },
+    doc: { pages: [
+      { id: 'p-you', title: 'About you', blocks: [
+        q('student_level', 'single_choice', 'Are you currently a student?', { required: true, options: opts('Bachelor', 'Master', 'PhD', 'Other programme', 'I’m not a student') }),
+        q('year', 'single_choice', 'Which year are you in?', { options: opts('1st', '2nd', '3rd', '4th or later'), show_if: STUDENTS_ONLY }),
+        q('university', 'dropdown', 'Which university do you study at?', { required: true, help: 'This stays anonymous. We only use it to group answers.', other: true, show_if: STUDENTS_ONLY,
+          options: opts('KU Leuven', 'UGent', 'VUB', 'ULB', 'UAntwerp', 'UHasselt', 'UCLouvain', 'ULiège', 'University of Luxembourg', 'Leiden University', 'Utrecht University', 'TU Delft', 'University of Amsterdam', 'University of Groningen', 'Radboud University', 'Prefer not to say') }),
+      ] },
+      { id: 'p-now', title: 'How it feels', blocks: [
+        q('exhausted', 'single_choice', 'In the past semester, how often did you feel exhausted or overwhelmed by your studies?', { required: true, show_if: STUDENTS_ONLY, options: opts('Never', 'Sometimes', 'Often', 'Almost always') }),
+        q('cope', 'multi_choice', 'When that happens, what do you usually do?', { help: 'Pick any that fit.', other: true, show_if: STUDENTS_ONLY, options: opts('Nothing, I push through', 'Talk to friends or family', 'Contact student support', 'See a doctor') }),
+        q('support', 'single_choice', 'Do you know where to find wellbeing support at your university?', { show_if: STUDENTS_ONLY, options: opts('Yes', 'Not really', 'No') }),
+      ] },
+      { id: 'p-idea', title: 'A weekly check-in', blocks: [
+        q('checkin', 'single_choice', 'Would you use a short weekly check-in (under a minute) that helps you notice when you’re running low?', { required: true, show_if: STUDENTS_ONLY, options: opts('Yes', 'Maybe', 'No') }),
+        q('stop', 'short_text', 'What would make you stop using something like this?', { maxLength: 300, show_if: STUDENTS_ONLY }),
+        q('where', 'single_choice', 'Where would you prefer to have it?', { required: true, show_if: STUDENTS_ONLY, options: opts('Inside my existing student app', 'A separate app', 'By email', 'A simple web link') }),
+        q('privacy', 'scale', 'How important is it that your answers stay completely private?', { min: 1, max: 5, minLabel: 'Not important', maxLabel: 'Essential', show_if: STUDENTS_ONLY }),
+      ] },
+      { id: 'p-more', title: 'One last thing', blocks: [
+        q('more', 'long_text', 'Anything else you’d like us to know?', { help: 'Optional. Please don’t include names or details that could identify you or anyone else.', maxLength: 1500, show_if: STUDENTS_ONLY }),
       ] },
     ] },
   },

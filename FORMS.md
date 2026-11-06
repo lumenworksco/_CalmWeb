@@ -21,7 +21,7 @@ A custom form builder and public form pages in the CalmCampus design system, run
 | Form logic | `docs/forms/core.js` | Document model, show-if logic, validation, summaries, CSV. Pure functions, used by the browser **and** the Worker, so the server enforces what the respondent sees. |
 | Renderer | `docs/forms/render.js` | The whole respondent flow, and the admin's live preview. DOM built with `textContent` only. |
 | Public page | `docs/f/` | `/f/<slug>`; strict CSP (`'self'` only). |
-| Templates | `docs/forms/templates.js` | Case study, waitlist, pilot intake, quick feedback. |
+| Templates | `docs/forms/templates.js` | Case study, student stress 2026 (with university, non-students exit after question 1), waitlist, pilot intake, quick feedback. |
 | Ingest Worker | `worker/` | `/api/*`: challenge, submit, reach, follow-up, delete. |
 | Database | `supabase/migrations/` | Tables, RLS, the respondent functions. Tests in `supabase/tests/`. |
 | Admin | `admin/` | Builder, settings, sharing, results. Assembled for deployment by `scripts/assemble-admin.sh`. |
@@ -93,4 +93,5 @@ GitHub Pages settings and the `CNAME` file are untouched by all of this.
 - **Cloudflare cache.** Set the zone's Browser Cache TTL to “Respect Existing Headers”, otherwise browsers may keep the form's files for 4 hours after an update.
 - **Keys.** The Supabase secret key lives only in the Worker's secrets. To rotate it, create a new key in Supabase, `npx wrangler secret put SUPABASE_SERVICE_KEY`, then delete the old one.
 - **Backups.** Download the CSV from Results every few days. The free Supabase plan pauses a project after a week without activity; unpause it in the dashboard if that happens.
+- **Leaving a group out of the results.** A form can hide later questions for some answers (for example non-students leave after question 1), but a submission is still stored. In Results, choose the question under “Filter by answer…”, switch “is” to “is not” and pick the answer to leave out: the counts, charts and table then exclude that group. The CSV and JSON downloads always contain every response, so drop those rows in the spreadsheet.
 - **Not built yet.** Matrix questions, notifications, linking forms to pilots, a retention period for follow-up emails.
